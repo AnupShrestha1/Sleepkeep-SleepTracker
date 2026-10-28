@@ -341,6 +341,29 @@ Still to do:
 - The release build works on both phones with R8 on.
 - Every Play form has a drafted answer in `RELEASE.md`.
 
+**Status:** prepared 2026-10-28; signing and publishing wait for you.
+
+- Checked the current Play rules:
+  - Data safety: on-device-only data isn't "collected", but the form and a privacy policy are
+    still required.
+  - Health apps declaration: required for every app; this one goes under Sleep Management.
+  - Microphone foreground service: needs a description, a user-impact note and a video.
+- Release signing reads a git-ignored `keystore.properties`. Without it the bundle is unsigned.
+- A `profile` build type (release code, debug key) is there for testing.
+- `bundleRelease` builds a 4.1 MB `.aab`. The release manifest has no `INTERNET` permission.
+- The profile build passed start/monitor/end, the night page, history, guidance, settings and
+  delete-all on the Samsung with no crashes. It's left installed there for the overnight tests.
+- `docs/RELEASE.md` has the checklist and every Play form answer drafted.
+- `docs/PRIVACY_POLICY.md` is ready apart from its placeholders.
+
+Still to do:
+
+- You: create the upload key and `keystore.properties`.
+- You: fill in the privacy policy placeholders.
+- Set the version for release.
+- After the overnight tests: the final signed build, the Xiaomi check of the release build, and
+  the Play Console steps.
+
 ---
 
 ## Open decisions

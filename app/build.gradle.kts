@@ -1,7 +1,17 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+}
+
+// Release signing comes from keystore.properties in the project root (git-ignored; see
+// docs/RELEASE.md), with the passwords optionally from environment variables. Without it the
+// release build is left unsigned. The key itself never goes into the repository.
+val keystoreProperties = Properties().apply {
+    val file = rootProject.file("keystore.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
 }
 
 android {
@@ -18,15 +28,35 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        val storePath = keystoreProperties.getProperty("storeFile")
+        if (storePath != null) {
+            create("release") {
+                storeFile = rootProject.file(storePath)
+                storePassword = keystoreProperties.getProperty("storePassword") ?: System.getenv("SLEEPKEEP_STORE_PASSWORD")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword") ?: System.getenv("SLEEPKEEP_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
             // R8 shrinking and optimisation, and unused resources removed.
             isMinifyEnabled = true
             isShrinkResources = true
+            signingConfig = signingConfigs.findByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        // Release code (R8, not debuggable) signed with the debug key, for testing the shrunk
+        // build and measuring battery on the test phones. Not for publishing: Play rejects it.
+        create("profile") {
+            initWith(getByName("release"))
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += listOf("release")
         }
     }
 
