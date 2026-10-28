@@ -45,7 +45,33 @@
     <string name="choice_60_plus">60+ min</string>
     <string name="choice_90_plus">90+ min</string>
 
+    <!-- History -->
+    <string name="open_history">Sleep history</string>
+    <string name="view_night">View night</string>
+    <string name="history_title">Sleep history</string>
+    <string name="history_empty">No sessions yet.</string>
+    <string name="history_in_progress">In progress</string>
+    <string name="history_since">Since %1$s</string>
+    <string name="history_times">%1$s → %2$s</string>
+    <string name="nap">Nap</string>
+
+    <!-- Night detail -->
+    <string name="edit_times">Edit times</string>
+    <string name="edit_check_in">Edit check-in</string>
+    <string name="delete_session">Delete session</string>
+    <string name="delete_confirm_title">Delete this session?</string>
+    <string name="delete_confirm_message">This removes its times, check-in answers and any sound events. It can\'t be undone.</string>
+    <string name="bedtime">Bedtime</string>
+    <string name="wake_up">Wake-up</string>
+    <string name="not_answered">Not answered</string>
+    <string name="detail_fall_asleep">Time to fall asleep: %1$s</string>
+    <string name="detail_awake">Awake during the night: %1$s</string>
+
     <!-- Common -->
     <string name="save">Save</string>
     <string name="skip">Skip</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="delete">Delete</string>
+    <string name="back">Back</string>
 </resources>

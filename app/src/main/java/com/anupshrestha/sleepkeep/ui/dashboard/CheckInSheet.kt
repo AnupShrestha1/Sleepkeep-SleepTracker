@@ -26,9 +26,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.anupshrestha.sleepkeep.R
 
-private data class Choice(val minutes: Int, @StringRes val label: Int)
+internal data class Choice(val minutes: Int, @StringRes val label: Int)
 
-private val fallAsleepChoices = listOf(
+internal val fallAsleepChoices = listOf(
     Choice(5, R.string.choice_under_5),
     Choice(15, R.string.choice_15),
     Choice(30, R.string.choice_30),
@@ -36,7 +36,7 @@ private val fallAsleepChoices = listOf(
     Choice(60, R.string.choice_60_plus),
 )
 
-private val awakeChoices = listOf(
+internal val awakeChoices = listOf(
     Choice(0, R.string.choice_none),
     Choice(15, R.string.choice_15),
     Choice(30, R.string.choice_30),
@@ -44,15 +44,22 @@ private val awakeChoices = listOf(
     Choice(90, R.string.choice_90_plus),
 )
 
+/** The chip label for a saved answer, e.g. 5 → "Under 5 min"; `null` for "not answered". */
+@StringRes
+internal fun choiceLabel(choices: List<Choice>, minutes: Int?): Int? =
+    choices.firstOrNull { it.minutes == minutes }?.label
+
 /** Optional morning questions; an unanswered question is saved as "not answered". */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckInSheet(
     onSave: (fallAsleepMinutes: Int?, awakeMinutes: Int?) -> Unit,
     onSkip: () -> Unit,
+    initialFallAsleep: Int? = null,
+    initialAwake: Int? = null,
 ) {
-    var fallAsleep by rememberSaveable { mutableStateOf<Int?>(null) }
-    var awake by rememberSaveable { mutableStateOf<Int?>(null) }
+    var fallAsleep by rememberSaveable { mutableStateOf(initialFallAsleep) }
+    var awake by rememberSaveable { mutableStateOf(initialAwake) }
 
     ModalBottomSheet(
         onDismissRequest = onSkip,

@@ -69,4 +69,9 @@ class SleepRepository(
     }
 
     suspend fun getSession(sessionId: Long): SleepSession? = dao.getSession(sessionId)
+
+    fun observeSession(sessionId: Long): Flow<SleepSession?> = dao.observeSession(sessionId)
+
+    // Step 4 adds: stop monitoring first if this is the active session.
+    suspend fun deleteSession(sessionId: Long) = dao.deleteSession(sessionId)
 }

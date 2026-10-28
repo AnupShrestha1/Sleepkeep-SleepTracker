@@ -24,13 +24,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.anupshrestha.sleepkeep.R
-import com.anupshrestha.sleepkeep.data.SessionRules
+import com.anupshrestha.sleepkeep.ui.common.timeErrorText
 import com.anupshrestha.sleepkeep.data.SleepSession
 import com.anupshrestha.sleepkeep.data.hasCheckIn
 import com.anupshrestha.sleepkeep.data.sleepEstimateMillis
@@ -43,7 +44,11 @@ import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen(viewModel: DashboardViewModel = viewModel(factory = DashboardViewModel.Factory)) {
+fun DashboardScreen(
+    onOpenHistory: () -> Unit,
+    onOpenNight: (Long) -> Unit,
+    viewModel: DashboardViewModel = viewModel(factory = DashboardViewModel.Factory),
+) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val prompt by viewModel.prompt.collectAsStateWithLifecycle()
 
@@ -64,7 +69,7 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel(factory = Dashboar
                 val lastSleep = state.lastSleep
                 when {
                     active != null -> ActiveCard(active, state.now)
-                    lastSleep != null -> LastSleepCard(lastSleep)
+                    lastSleep != null -> LastSleepCard(lastSleep, onView = { onOpenNight(lastSleep.id) })
                     else -> EmptyCard()
                 }
                 Button(
@@ -79,6 +84,9 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel(factory = Dashboar
                         ),
                         style = MaterialTheme.typography.titleMedium,
                     )
+                }
+                TextButton(onClick = onOpenHistory, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.open_history))
                 }
             }
         }
@@ -120,7 +128,7 @@ private fun ActiveCard(session: SleepSession, now: Long) {
 }
 
 @Composable
-private fun LastSleepCard(session: SleepSession) {
+private fun LastSleepCard(session: SleepSession, onView: () -> Unit) {
     val end = session.endTime ?: return
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -148,6 +156,9 @@ private fun LastSleepCard(session: SleepSession) {
                 ),
                 style = MaterialTheme.typography.bodyMedium,
             )
+            TextButton(onClick = onView, modifier = Modifier.align(Alignment.End)) {
+                Text(stringResource(R.string.view_night))
+            }
         }
     }
 }
@@ -207,12 +218,4 @@ private fun LongSessionDialog(
             TextButton(onClick = onKeep) { Text(stringResource(R.string.keep_as_is)) }
         },
     )
-}
-
-private fun timeErrorText(error: SessionRules.TimeError): Int = when (error) {
-    SessionRules.TimeError.END_BEFORE_START -> R.string.error_end_before_start
-    SessionRules.TimeError.IN_FUTURE -> R.string.error_in_future
-    SessionRules.TimeError.TOO_SHORT -> R.string.error_too_short
-    SessionRules.TimeError.TOO_LONG -> R.string.error_too_long
-    SessionRules.TimeError.OVERLAPS -> R.string.error_overlaps
 }

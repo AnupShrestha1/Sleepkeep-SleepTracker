@@ -116,6 +116,18 @@ unit-tested). Changes from the list above:
 - Edit check-in updates the sleep estimate.
 - Deleting asks first and removes the session.
 
+**Status:** done on the Samsung 2026-10-28: 14 unit tests and 6 instrumented tests pass (the new
+ones cover nap tagging and the delete cascade). History, night detail, editing times (refused when
+too short, accepted at exactly 24 h), editing the check-in and deleting all work. The Xiaomi check
+is still to do: it refused the USB install. Changes from the list above:
+
+- Edited times are rounded down to the whole minute, since the pickers only show minutes. This
+  fixes 14:22 → 14:22 the next day being refused as a few seconds over 24 h.
+- The active session shows in history but isn't tappable. Editing or deleting it comes with
+  step 4, which has to stop monitoring first.
+- A small `SleepStats.kt` with night dates and nap tagging arrives now; step 6 extends it.
+- The back arrow is a drawable, to avoid adding the Material icons library.
+
 ---
 
 ## Step 4 — Microphone service, permissions, coverage

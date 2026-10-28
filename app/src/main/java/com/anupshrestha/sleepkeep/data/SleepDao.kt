@@ -29,6 +29,13 @@ interface SleepDao {
     @Query("SELECT * FROM sleep_sessions WHERE endTime IS NOT NULL ORDER BY endTime DESC")
     fun observeCompletedSessions(): Flow<List<SleepSession>>
 
+    @Query("SELECT * FROM sleep_sessions WHERE id = :id")
+    fun observeSession(id: Long): Flow<SleepSession?>
+
+    /** Also deletes the session's monitoring segments and sound events (foreign-key cascade). */
+    @Query("DELETE FROM sleep_sessions WHERE id = :id")
+    suspend fun deleteSession(id: Long)
+
     /** Sessions other than [excludeId] that overlap start..end; an active one counts up to [now]. */
     @Query(
         """

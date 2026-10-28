@@ -92,6 +92,23 @@ class SleepRepositoryTest {
     }
 
     @Test
+    fun deletingASessionDeletesItsSegmentsAndEvents() = runTest {
+        val id = (repository.startSession() as SleepRepository.StartResult.Started).sessionId
+        val dao = db.sleepDao()
+        dao.insertSegment(MonitoringSegment(sessionId = id, startTime = nowMillis, lastHeartbeat = nowMillis))
+        db.openHelper.writableDatabase.execSQL(
+            "INSERT INTO sound_events (sessionId, startTime, endTime, peakAboveBackgroundDb) VALUES ($id, $nowMillis, $nowMillis, 20)"
+        )
+        repository.deleteSession(id)
+        assertNull(repository.getSession(id))
+        assertTrue(dao.getSegments(id).isEmpty())
+        val events = db.openHelper.readableDatabase.query("SELECT COUNT(*) FROM sound_events").use {
+            it.moveToFirst(); it.getInt(0)
+        }
+        assertEquals(0, events)
+    }
+
+    @Test
     fun checkInIsSaved() = runTest {
         repository.startSession()
         nowMillis += 8 * hour
