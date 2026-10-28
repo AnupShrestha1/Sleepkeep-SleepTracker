@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Sleepkeep</string>
+    <string name="placeholder_message">Sleep tracking arrives in the next step.</string>
+</resources>
