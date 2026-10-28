@@ -67,6 +67,30 @@
     <string name="detail_fall_asleep">Time to fall asleep: %1$s</string>
     <string name="detail_awake">Awake during the night: %1$s</string>
 
+    <!-- Sound monitoring -->
+    <string name="monitor_sounds">Monitor sounds overnight</string>
+    <string name="monitor_sounds_hint">Notices loud sounds while you sleep. Audio is analysed on this phone and never saved.</string>
+    <string name="monitor_listening">Listening for loud sounds.</string>
+    <string name="monitor_silenced">The microphone has been silent since %1$s. Another app may be using it, or it may be turned off.</string>
+    <string name="monitor_off">Not listening for sounds.</string>
+    <string name="monitor_mic_denied">Sound monitoring is off: the microphone isn\'t allowed.</string>
+    <string name="monitor_not_running">Sound monitoring isn\'t running.</string>
+    <string name="monitor_stopped_by_you">You stopped sound monitoring at %1$s.</string>
+    <string name="monitor_mic_error">Sound monitoring stopped at %1$s because of a microphone error.</string>
+    <string name="monitor_stopped_unexpectedly">Sound monitoring stopped around %1$s. The phone may have closed the app.</string>
+    <string name="monitor_notifications_off">Notifications are off, so you won\'t see the monitoring notification.</string>
+    <string name="start_monitoring">Start monitoring</string>
+    <string name="stop_monitoring">Stop monitoring</string>
+    <string name="resume">Resume monitoring</string>
+    <string name="open_settings">Open settings</string>
+    <string name="mic_rationale_title">Use the microphone?</string>
+    <string name="mic_rationale_message">Sleepkeep listens only to notice loud sounds while you sleep. Audio is analysed on this phone and is never saved or sent anywhere. Android will also ask to show a notification while monitoring runs.</string>
+    <string name="continue_label">Continue</string>
+    <string name="not_now">Not now</string>
+    <string name="notification_channel">Sleep monitoring</string>
+    <string name="notification_title">Listening for loud sounds</string>
+    <string name="notification_text">Audio is analysed on this phone and never saved.</string>
+
     <!-- Common -->
     <string name="save">Save</string>
     <string name="skip">Skip</string>

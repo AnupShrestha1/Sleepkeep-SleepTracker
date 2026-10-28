@@ -55,6 +55,36 @@ interface SleepDao {
     @Query("SELECT * FROM monitoring_segments WHERE sessionId = :sessionId ORDER BY startTime")
     suspend fun getSegments(sessionId: Long): List<MonitoringSegment>
 
+    @Query("SELECT * FROM monitoring_segments WHERE sessionId = :sessionId ORDER BY startTime")
+    fun observeSegments(sessionId: Long): Flow<List<MonitoringSegment>>
+
+    @Query("UPDATE monitoring_segments SET lastHeartbeat = :time WHERE id = :segmentId")
+    suspend fun updateHeartbeat(segmentId: Long, time: Long)
+
+    @Query(
+        """
+        UPDATE monitoring_segments SET endTime = :endTime, endReason = :reason
+        WHERE id = :segmentId AND endTime IS NULL
+        """
+    )
+    suspend fun closeSegment(segmentId: Long, endTime: Long, reason: String)
+
+    /** Open segments from before [before] whose service died; they end at their last heartbeat. */
+    @Query(
+        """
+        UPDATE monitoring_segments SET endTime = lastHeartbeat, endReason = :reason
+        WHERE endTime IS NULL AND startTime < :before
+        """
+    )
+    suspend fun closeStaleSegments(before: Long, reason: String)
+
+    @Query("UPDATE sleep_sessions SET monitoringRequested = :requested WHERE id = :sessionId")
+    suspend fun setMonitoringRequested(sessionId: Long, requested: Boolean)
+
+    /** Whether the most recent session had monitoring on; `null` before the first session. */
+    @Query("SELECT monitoringRequested FROM sleep_sessions ORDER BY startTime DESC LIMIT 1")
+    fun observeLastMonitoringChoice(): Flow<Boolean?>
+
     @Query(
         """
         UPDATE monitoring_segments SET endTime = :endTime, endReason = :reason

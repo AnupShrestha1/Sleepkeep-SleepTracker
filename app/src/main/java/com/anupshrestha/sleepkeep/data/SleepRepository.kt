@@ -72,6 +72,32 @@ class SleepRepository(
 
     fun observeSession(sessionId: Long): Flow<SleepSession?> = dao.observeSession(sessionId)
 
-    // Step 4 adds: stop monitoring first if this is the active session.
+    // Only completed sessions can be deleted from the UI, so monitoring is never running here.
     suspend fun deleteSession(sessionId: Long) = dao.deleteSession(sessionId)
+
+    // Monitoring
+
+    val lastMonitoringChoice: Flow<Boolean?> = dao.observeLastMonitoringChoice()
+
+    fun observeSegments(sessionId: Long): Flow<List<MonitoringSegment>> = dao.observeSegments(sessionId)
+
+    suspend fun setMonitoringRequested(sessionId: Long, requested: Boolean) =
+        dao.setMonitoringRequested(sessionId, requested)
+
+    suspend fun startSegment(sessionId: Long): Long {
+        val now = clock.millis()
+        return dao.insertSegment(MonitoringSegment(sessionId = sessionId, startTime = now, lastHeartbeat = now))
+    }
+
+    suspend fun heartbeat(segmentId: Long) = dao.updateHeartbeat(segmentId, clock.millis())
+
+    suspend fun closeSegment(segmentId: Long, endTime: Long, reason: String) =
+        dao.closeSegment(segmentId, endTime, reason)
+
+    /**
+     * Called when the app process starts. Nothing can be monitoring yet, so any open segment
+     * belongs to a service that was killed; it ends at its last heartbeat.
+     */
+    suspend fun closeStaleSegments(processStart: Long) =
+        dao.closeStaleSegments(processStart, EndReason.STOPPED_UNEXPECTEDLY)
 }

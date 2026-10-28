@@ -1,5 +1,8 @@
 package com.anupshrestha.sleepkeep.ui.dashboard
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,26 +24,39 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.anupshrestha.sleepkeep.R
-import com.anupshrestha.sleepkeep.ui.common.timeErrorText
 import com.anupshrestha.sleepkeep.data.SleepSession
 import com.anupshrestha.sleepkeep.data.hasCheckIn
 import com.anupshrestha.sleepkeep.data.sleepEstimateMillis
 import com.anupshrestha.sleepkeep.data.timeInBedMillis
+import com.anupshrestha.sleepkeep.ui.common.MicRationaleDialog
 import com.anupshrestha.sleepkeep.ui.common.formatClock
 import com.anupshrestha.sleepkeep.ui.common.formatDay
 import com.anupshrestha.sleepkeep.ui.common.formatDuration
+import com.anupshrestha.sleepkeep.ui.common.hasMicPermission
 import com.anupshrestha.sleepkeep.ui.common.is24HourClock
+import com.anupshrestha.sleepkeep.ui.common.monitoringPermissions
+import com.anupshrestha.sleepkeep.ui.common.notificationsEnabled
+import com.anupshrestha.sleepkeep.ui.common.openAppSettings
+import com.anupshrestha.sleepkeep.ui.common.timeErrorText
 import java.time.LocalTime
+
+/** What to do once the microphone question is answered. */
+private enum class AfterMicPrompt { START_SESSION, START_MONITORING }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +67,37 @@ fun DashboardScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val prompt by viewModel.prompt.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    // Permissions can change in system settings while the app is in the background.
+    var permissionCheck by remember { mutableIntStateOf(0) }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { permissionCheck++ }
+    val micGranted = remember(permissionCheck) { hasMicPermission(context) }
+    val notificationsOn = remember(permissionCheck, state.monitorStatus) { notificationsEnabled(context) }
+
+    // null = not changed by the user, so use what the previous session did.
+    var monitorChoice by rememberSaveable { mutableStateOf<Boolean?>(null) }
+    val monitorSounds = monitorChoice ?: state.lastMonitoringChoice
+
+    var afterMicPrompt by rememberSaveable { mutableStateOf<AfterMicPrompt?>(null) }
+    var showRationale by rememberSaveable { mutableStateOf(false) }
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { result ->
+        permissionCheck++
+        val granted = result[Manifest.permission.RECORD_AUDIO] == true
+        when (afterMicPrompt) {
+            AfterMicPrompt.START_SESSION -> viewModel.startSleep(monitor = true, micGranted = granted)
+            AfterMicPrompt.START_MONITORING -> state.activeSession?.let { if (granted) viewModel.startMonitoring(it.id) }
+            null -> Unit
+        }
+        afterMicPrompt = null
+    }
+
+    fun askForMicThen(next: AfterMicPrompt) {
+        afterMicPrompt = next
+        showRationale = true
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -68,12 +115,36 @@ fun DashboardScreen(
                 val active = state.activeSession
                 val lastSleep = state.lastSleep
                 when {
-                    active != null -> ActiveCard(active, state.now)
+                    active != null -> ActiveCard(active, state.now) {
+                        MonitoringStatusLine(
+                            session = active,
+                            status = state.monitorStatus,
+                            segments = state.segments,
+                            micGranted = micGranted,
+                            notificationsOn = notificationsOn,
+                            onStart = {
+                                if (micGranted) viewModel.startMonitoring(active.id)
+                                else askForMicThen(AfterMicPrompt.START_MONITORING)
+                            },
+                            onStop = viewModel::stopMonitoring,
+                            onOpenSettings = { openAppSettings(context) },
+                        )
+                    }
                     lastSleep != null -> LastSleepCard(lastSleep, onView = { onOpenNight(lastSleep.id) })
                     else -> EmptyCard()
                 }
+                if (active == null) {
+                    MonitorSoundsSwitch(checked = monitorSounds, onCheckedChange = { monitorChoice = it })
+                }
                 Button(
-                    onClick = if (active != null) viewModel::endSleep else viewModel::startSleep,
+                    onClick = {
+                        when {
+                            active != null -> viewModel.endSleep()
+                            !monitorSounds -> viewModel.startSleep(monitor = false, micGranted = micGranted)
+                            micGranted -> viewModel.startSleep(monitor = true, micGranted = true)
+                            else -> askForMicThen(AfterMicPrompt.START_SESSION)
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
@@ -92,6 +163,23 @@ fun DashboardScreen(
         }
     }
 
+    if (showRationale) {
+        MicRationaleDialog(
+            onContinue = {
+                showRationale = false
+                permissionLauncher.launch(monitoringPermissions())
+            },
+            onNotNow = {
+                showRationale = false
+                // Declining here starts the session without monitoring, as the user chose.
+                if (afterMicPrompt == AfterMicPrompt.START_SESSION) {
+                    viewModel.startSleep(monitor = false, micGranted = false)
+                }
+                afterMicPrompt = null
+            },
+        )
+    }
+
     when (val p = prompt) {
         is EndPrompt.LongSession -> LongSessionDialog(
             prompt = p,
@@ -107,7 +195,7 @@ fun DashboardScreen(
 }
 
 @Composable
-private fun ActiveCard(session: SleepSession, now: Long) {
+private fun ActiveCard(session: SleepSession, now: Long, monitoring: @Composable () -> Unit) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
@@ -123,6 +211,7 @@ private fun ActiveCard(session: SleepSession, now: Long) {
                 ),
                 style = MaterialTheme.typography.bodyLarge,
             )
+            monitoring()
         }
     }
 }

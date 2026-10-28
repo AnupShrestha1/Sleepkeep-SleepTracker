@@ -160,6 +160,37 @@ report gaps honestly, without any detection yet.
   Resume.
 - A phone call and the mic privacy toggle each produce a labelled gap.
 
+**Status:** done on the Samsung 2026-10-28; the Xiaomi was disconnected. Checked on the Samsung:
+
+- The explanation shows before Android's prompt.
+- Denying the microphone still starts the session, with "the microphone isn't allowed" and an
+  Open settings button.
+- After allowing it, Resume starts monitoring as a foreground service, recording 16 kHz from the
+  VOICE_RECOGNITION source.
+- Recording continued after 75 s in the background.
+- A force-stop followed by reopening shows "stopped around 15:14" (the last heartbeat) and Resume
+  works.
+- The mic privacy toggle shows "silent since 15:15", and monitoring picks up again by itself when
+  the microphone returns.
+- Both the in-app and the notification Stop buttons work, and so does End sleep.
+- The notification is hidden when notifications are denied, and the app says so.
+- The switch remembers the last session's choice.
+
+Not checked yet:
+
+- The Xiaomi.
+- A phone call.
+- A screen-off, unplugged night (USB charging keeps Android out of Doze). The first real night
+  answers whether a wake lock is needed.
+
+Changes from the list above:
+
+- `MicPermission.kt` holds the permission helpers and the explanation dialog. The monitoring
+  views are in `MonitoringViews.kt`, and `AudioInput.kt` opens the microphone.
+- "Another app has the mic" and "mic turned off" share one label. Both arrive as exact digital
+  silence, and telling them apart needs an API 29+ callback that adds little.
+- A gap from a killed app ends at its last heartbeat, so it can be up to a minute early.
+
 ---
 
 ## Step 5 — Loud sound detection
