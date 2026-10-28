@@ -11,11 +11,13 @@ import com.anupshrestha.sleepkeep.ui.guidance.GuidanceScreen
 import com.anupshrestha.sleepkeep.ui.history.HistoryScreen
 import com.anupshrestha.sleepkeep.ui.night.NightDetailScreen
 import com.anupshrestha.sleepkeep.ui.night.NightDetailViewModel
+import com.anupshrestha.sleepkeep.ui.settings.SettingsScreen
 
 private object Routes {
     const val DASHBOARD = "dashboard"
     const val HISTORY = "history"
     const val GUIDANCE = "guidance"
+    const val SETTINGS = "settings"
     const val NIGHT = "night/{${NightDetailViewModel.NIGHT_ID_ARG}}"
     fun night(id: Long) = "night/$id"
 }
@@ -29,7 +31,11 @@ fun AppNavHost() {
                 onOpenHistory = { navController.navigate(Routes.HISTORY) },
                 onOpenNight = { navController.navigate(Routes.night(it)) },
                 onOpenGuidance = { navController.navigate(Routes.GUIDANCE) },
+                onOpenSettings = { navController.navigate(Routes.SETTINGS) },
             )
+        }
+        composable(Routes.SETTINGS) {
+            SettingsScreen(onBack = { navController.popBackStack() })
         }
         composable(Routes.GUIDANCE) {
             GuidanceScreen(onBack = { navController.popBackStack() })

@@ -149,6 +149,32 @@
     <string name="guidance_source">%1$s: %2$s (page dated %3$s)</string>
     <string name="guidance_checked">Checked on %1$s. Links open in your browser; the guidance itself is stored in the app.</string>
 
+    <!-- Settings & privacy -->
+    <string name="settings_title">Settings &amp; privacy</string>
+    <string name="privacy_title">Your data stays on this phone</string>
+    <string name="privacy_on_device">Sessions, check-in answers and sound events are stored only on this phone. There\'s no account.</string>
+    <string name="privacy_no_internet">The app has no internet access. Source links open in your browser.</string>
+    <string name="privacy_no_backup">Nothing is copied to cloud backup or to a new phone.</string>
+    <string name="privacy_no_audio">No audio is ever saved. Sound monitoring keeps only when a loud sound happened, how long it lasted and roughly how loud it was.</string>
+    <string name="privacy_no_tracking">No ads and no analytics.</string>
+    <string name="permissions_title">Permissions</string>
+    <string name="permission_mic_on">Microphone: allowed</string>
+    <string name="permission_mic_off">Microphone: not allowed. Sound monitoring can\'t run.</string>
+    <string name="permission_notifications_on">Notifications: on</string>
+    <string name="permission_notifications_off">Notifications: off. Monitoring still works, but its notification is hidden.</string>
+    <string name="open_app_settings">Open app settings</string>
+    <string name="battery_title">If monitoring stops during the night</string>
+    <string name="battery_text">Some phones close apps overnight to save battery. If a night shows gaps saying the app was stopped, open the app\'s settings, go to Battery, and choose Unrestricted (or No restrictions). Keeping the phone charging overnight also helps.</string>
+    <string name="delete_all_title">Delete all data</string>
+    <string name="delete_all_text">Removes every session, check-in answer and sound event from this phone.</string>
+    <string name="delete_all_button">Delete all data</string>
+    <string name="delete_all_confirm_title">Delete all data?</string>
+    <string name="delete_all_confirm_message">This stops any monitoring and deletes everything Sleepkeep has stored. It can\'t be undone.</string>
+    <string name="delete_all_confirm">Delete everything</string>
+    <string name="delete_all_done">All data deleted.</string>
+    <string name="app_version">Version %1$s</string>
+    <string name="settings">Settings</string>
+
     <!-- Common -->
     <string name="save">Save</string>
     <string name="skip">Skip</string>

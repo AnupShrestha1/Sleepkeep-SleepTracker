@@ -109,6 +109,26 @@ class SleepRepositoryTest {
     }
 
     @Test
+    fun deleteAllLeavesNothing() = runTest {
+        val id = (repository.startSession() as SleepRepository.StartResult.Started).sessionId
+        db.sleepDao().insertSegment(MonitoringSegment(sessionId = id, startTime = nowMillis, lastHeartbeat = nowMillis))
+        repository.saveSoundEvent(id, nowMillis, nowMillis + 1000, 20f)
+        nowMillis += 8 * hour
+        repository.endSession()
+        repository.startSession()
+
+        repository.deleteAll()
+
+        assertNull(db.sleepDao().getActiveSession())
+        assertNull(repository.getSession(id))
+        assertTrue(db.sleepDao().getSegments(id).isEmpty())
+        val events = db.openHelper.readableDatabase.query("SELECT COUNT(*) FROM sound_events").use {
+            it.moveToFirst(); it.getInt(0)
+        }
+        assertEquals(0, events)
+    }
+
+    @Test
     fun checkInIsSaved() = runTest {
         repository.startSession()
         nowMillis += 8 * hour

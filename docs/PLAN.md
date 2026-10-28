@@ -292,6 +292,22 @@ Changes from the list above:
 - Detector thresholds are tuned from those nights. A decision is recorded on whether any
   "repeating sound" label is justified (the default is no).
 
+**Status:** the code half is done on the Samsung 2026-10-28.
+
+- Settings & privacy opens from the gear on the dashboard. It shows the privacy statement,
+  permission status, battery help and the app version.
+- Delete all data, run during monitoring, stopped the service and left an empty dashboard and
+  history.
+- 40 unit tests and 7 instrumented tests pass. The new instrumented test checks delete-all.
+- `docs/TEST_LOG.md` has the overnight procedure and a results table.
+
+Still to do:
+
+- The overnight runs: at least two per phone.
+- The Xiaomi checks for steps 3–7.
+- A phone call during monitoring.
+- Tuning the thresholds from the nights.
+
 ---
 
 ## Step 8 — Release preparation

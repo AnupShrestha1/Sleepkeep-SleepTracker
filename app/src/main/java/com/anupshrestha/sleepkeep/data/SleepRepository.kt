@@ -1,7 +1,9 @@
 package com.anupshrestha.sleepkeep.data
 
 import androidx.room.withTransaction
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import java.time.Clock
 import java.time.ZoneId
 
@@ -74,6 +76,9 @@ class SleepRepository(
 
     // Only completed sessions can be deleted from the UI, so monitoring is never running here.
     suspend fun deleteSession(sessionId: Long) = dao.deleteSession(sessionId)
+
+    /** Removes every session, segment and sound event. The caller stops monitoring first. */
+    suspend fun deleteAll() = withContext(Dispatchers.IO) { db.clearAllTables() }
 
     // Monitoring
 
