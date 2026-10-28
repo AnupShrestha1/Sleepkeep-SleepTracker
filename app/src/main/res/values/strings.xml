@@ -1,4 +1,51 @@
 <resources>
     <string name="app_name">Sleepkeep</string>
-    <string name="placeholder_message">Sleep tracking arrives in the next step.</string>
+
+    <!-- Durations -->
+    <string name="duration_hm">%1$d h %2$d m</string>
+    <string name="duration_m">%1$d m</string>
+
+    <!-- Dashboard -->
+    <string name="start_sleep">Start sleep</string>
+    <string name="end_sleep">End sleep</string>
+    <string name="sleeping_since">Sleeping since %1$s</string>
+    <string name="elapsed_so_far">%1$s so far</string>
+    <string name="last_sleep_label">Last sleep · %1$s</string>
+    <string name="time_in_bed">%1$s in bed</string>
+    <string name="sleep_estimate">About %1$s asleep (your estimate)</string>
+    <string name="no_check_in">Morning check-in skipped, so this is time in bed only.</string>
+    <string name="bed_and_up">Bed %1$s · Up %2$s</string>
+    <string name="no_sleep_yet">No sleep recorded yet. Tap Start sleep when you go to bed.</string>
+
+    <!-- Long session prompt -->
+    <string name="long_session_title">Did you forget to end it?</string>
+    <string name="long_session_message">This session is %1$s long. You can set the time you actually woke up, or keep it as it is.</string>
+    <string name="long_session_pick">What time did you wake up?</string>
+    <string name="set_wake_time">Set wake-up time</string>
+    <string name="keep_as_is">Keep as is</string>
+
+    <!-- Time errors -->
+    <string name="error_end_before_start">The wake-up time must be after the bedtime.</string>
+    <string name="error_in_future">The wake-up time can\'t be in the future.</string>
+    <string name="error_too_short">A session must be at least 5 minutes long.</string>
+    <string name="error_too_long">A session can\'t be longer than 24 hours.</string>
+    <string name="error_overlaps">These times overlap another saved session.</string>
+
+    <!-- Morning check-in -->
+    <string name="check_in_title">Morning check-in</string>
+    <string name="check_in_intro">Optional. Your answers turn time in bed into a rough sleep estimate. Leave a question blank if you\'re not sure.</string>
+    <string name="check_in_fall_asleep">About how long did it take to fall asleep?</string>
+    <string name="check_in_awake">About how long were you awake during the night?</string>
+    <string name="choice_none">None</string>
+    <string name="choice_under_5">Under 5 min</string>
+    <string name="choice_15">15 min</string>
+    <string name="choice_30">30 min</string>
+    <string name="choice_45">45 min</string>
+    <string name="choice_60">60 min</string>
+    <string name="choice_60_plus">60+ min</string>
+    <string name="choice_90_plus">90+ min</string>
+
+    <!-- Common -->
+    <string name="save">Save</string>
+    <string name="skip">Skip</string>
 </resources>

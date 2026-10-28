@@ -4,6 +4,7 @@
     <!-- Sleep data stays on this phone: no cloud backup (allowBackup) and, on Android 12+,
          no cloud backup or device-to-device transfer (dataExtractionRules). -->
     <application
+        android:name=".SleepApp"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher"

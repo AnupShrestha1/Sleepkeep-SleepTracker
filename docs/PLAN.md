@@ -87,6 +87,15 @@ dashboard.
 - Dashboard shows last night's time in bed, sleep estimate, bedtime and wake-up time.
 - Unit and instrumented tests pass.
 
+**Status:** done 2026-10-28 on both phones: 10 unit tests pass, the 5 instrumented tests pass on
+each phone, and start → force-stop → reopen → end → check-in works. Not yet checked: a reboot
+during a session, and the long-session dialog on a real device (only its time logic is
+unit-tested). Changes from the list above:
+
+- `AppNavHost.kt` moves to step 3, where the second screen arrives.
+- The card is labelled "Last sleep", not "Last night", since the latest session may be older
+  than last night.
+
 ---
 
 ## Step 3 — History, night detail, edit, delete
