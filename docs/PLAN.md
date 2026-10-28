@@ -211,6 +211,25 @@ Changes from the list above:
 - Night detail shows coverage, gaps with reasons, and the event list with its "can't tell sounds
   apart" note.
 
+**Status:** done on the Samsung 2026-10-28; the Xiaomi was disconnected.
+
+- 30 unit tests pass. They include 9 detector tests and 7 coverage tests (`Coverage.kt`, a new
+  file that computes monitored time and the gaps with their reasons).
+- 6 instrumented tests pass.
+- Windows alarm sounds played from the PC speakers after warm-up produced 9 events (1–22 s,
+  moderate to very loud) on the night page, under "Monitored 3 m of 4 m".
+
+Not checked yet:
+
+- A whole real night: false alarms from a fan, traffic or a partner, and how many events a normal
+  night produces. The thresholds get tuned from those nights in step 7.
+- A night with gaps on the page; only the coverage unit tests cover them.
+
+Changes from the list above:
+
+- Night detail lists the first 20 events, with "Show all".
+- Short events show seconds ("5 s").
+
 ---
 
 ## Step 6 — Sleep guidance

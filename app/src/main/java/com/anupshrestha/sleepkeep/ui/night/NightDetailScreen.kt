@@ -81,6 +81,9 @@ fun NightDetailScreen(
         ) {
             SummaryCard(session)
             CheckInCard(session)
+            if (session.monitoringRequested || state.segments.isNotEmpty()) {
+                SoundSection(session, state.segments, state.soundEvents)
+            }
             OutlinedButton(onClick = viewModel::openTimesEdit, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.edit_times))
             }

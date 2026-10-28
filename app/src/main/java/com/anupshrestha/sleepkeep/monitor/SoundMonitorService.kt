@@ -100,6 +100,12 @@ class SoundMonitorService : Service() {
         val status = container.monitor.mutableStatus
 
         val input = AudioInput.open() ?: return
+        val detector = LoudnessDetector()
+        suspend fun save(event: LoudnessDetector.Event?) {
+            if (event != null) {
+                repository.saveSoundEvent(sessionId, event.startTime, event.endTime, event.peakAboveBackgroundDb)
+            }
+        }
         var segmentId: Long? = null
         try {
             segmentId = repository.startSegment(sessionId)
@@ -125,6 +131,7 @@ class SoundMonitorService : Service() {
                     val current = segmentId
                     if (current != null && silentMillis >= SILENCE_LIMIT_MILLIS) {
                         val since = now - silentMillis
+                        save(detector.flush(since))
                         repository.closeSegment(current, since, EndReason.MIC_SILENCED)
                         segmentId = null
                         status.value = MonitorStatus.Running(sessionId, silencedSince = since)
@@ -136,7 +143,7 @@ class SoundMonitorService : Service() {
                         lastHeartbeat = now
                         status.value = MonitorStatus.Running(sessionId)
                     }
-                    // Step 5 feeds the level of this chunk to the loud-sound detector here.
+                    save(detector.process(now, LoudnessDetector.levelDb(buffer, read)))
                 }
 
                 val current = segmentId
@@ -150,6 +157,12 @@ class SoundMonitorService : Service() {
             if (e is kotlinx.coroutines.CancellationException) throw e
         } finally {
             withContext(NonCancellable) {
+                // A sound still going on when monitoring stops is kept.
+                try {
+                    save(detector.flush(clock.millis()))
+                } catch (e: Exception) {
+                    // The session may have been deleted; nothing to attach the event to.
+                }
                 // A no-op if ending the session already closed it.
                 segmentId?.let { repository.closeSegment(it, clock.millis(), stopReason) }
             }

@@ -91,6 +91,28 @@
     <string name="notification_title">Listening for loud sounds</string>
     <string name="notification_text">Audio is analysed on this phone and never saved.</string>
 
+    <!-- Night detail: sounds -->
+    <string name="sound_title">Sounds</string>
+    <string name="sound_coverage">Monitored %1$s of %2$s.</string>
+    <string name="sound_gap">Not monitored %1$s–%2$s: %3$s</string>
+    <string name="gap_not_running">monitoring wasn\'t running.</string>
+    <string name="gap_user_stopped">you stopped monitoring.</string>
+    <string name="gap_mic_silenced">the microphone was silent (another app may have been using it, or it was turned off).</string>
+    <string name="gap_mic_error">a microphone error.</string>
+    <string name="gap_stopped_unexpectedly">the app was stopped, possibly by the phone\'s battery saving.</string>
+    <string name="sound_none">No loud sounds noticed.</string>
+    <plurals name="sound_count">
+        <item quantity="one">%1$d loud sound</item>
+        <item quantity="other">%1$d loud sounds</item>
+    </plurals>
+    <string name="sound_event">%1$s · %2$s · %3$s</string>
+    <string name="sound_show_all">Show all %1$d</string>
+    <string name="loudness_moderate">moderate</string>
+    <string name="loudness_loud">loud</string>
+    <string name="loudness_very_loud">very loud</string>
+    <string name="sound_note">Loud sounds can come from snoring, talking, traffic, pets or anything else. This app can\'t tell them apart.</string>
+    <string name="duration_s">%1$d s</string>
+
     <!-- Common -->
     <string name="save">Save</string>
     <string name="skip">Skip</string>

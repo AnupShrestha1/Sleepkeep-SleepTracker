@@ -78,6 +78,14 @@ interface SleepDao {
     )
     suspend fun closeStaleSegments(before: Long, reason: String)
 
+    // Sound events
+
+    @Insert
+    suspend fun insertSoundEvent(event: SoundEvent): Long
+
+    @Query("SELECT * FROM sound_events WHERE sessionId = :sessionId ORDER BY startTime")
+    fun observeSoundEvents(sessionId: Long): Flow<List<SoundEvent>>
+
     @Query("UPDATE sleep_sessions SET monitoringRequested = :requested WHERE id = :sessionId")
     suspend fun setMonitoringRequested(sessionId: Long, requested: Boolean)
 

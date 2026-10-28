@@ -94,6 +94,19 @@ class SleepRepository(
     suspend fun closeSegment(segmentId: Long, endTime: Long, reason: String) =
         dao.closeSegment(segmentId, endTime, reason)
 
+    fun observeSoundEvents(sessionId: Long): Flow<List<SoundEvent>> = dao.observeSoundEvents(sessionId)
+
+    suspend fun saveSoundEvent(sessionId: Long, startTime: Long, endTime: Long, peakAboveBackgroundDb: Float) {
+        dao.insertSoundEvent(
+            SoundEvent(
+                sessionId = sessionId,
+                startTime = startTime,
+                endTime = endTime,
+                peakAboveBackgroundDb = peakAboveBackgroundDb,
+            )
+        )
+    }
+
     /**
      * Called when the app process starts. Nothing can be monitoring yet, so any open segment
      * belongs to a service that was killed; it ends at its last heartbeat.
