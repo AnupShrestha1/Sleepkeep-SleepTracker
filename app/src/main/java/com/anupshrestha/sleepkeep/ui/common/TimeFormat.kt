@@ -33,6 +33,13 @@ fun formatClock(millis: Long, zoneId: String): String {
     return formatter.format(Instant.ofEpochMilli(millis).atZone(ZoneId.of(zoneId)))
 }
 
+/** A clock time given as minutes after midnight, e.g. 1400 → "23:20". */
+@Composable
+fun formatMinuteOfDay(minuteOfDay: Int): String {
+    val formatter = if (DateFormat.is24HourFormat(LocalContext.current)) clock24Formatter else clock12Formatter
+    return formatter.format(java.time.LocalTime.of(minuteOfDay / 60, minuteOfDay % 60))
+}
+
 /** "Tue 27 Oct". */
 fun formatDay(millis: Long, zoneId: String): String =
     dayFormatter.format(Instant.ofEpochMilli(millis).atZone(ZoneId.of(zoneId)))

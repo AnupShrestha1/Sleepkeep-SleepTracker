@@ -113,6 +113,42 @@
     <string name="sound_note">Loud sounds can come from snoring, talking, traffic, pets or anything else. This app can\'t tell them apart.</string>
     <string name="duration_s">%1$d s</string>
 
+    <!-- Weekly summary (dashboard) -->
+    <plurals name="weekly_title">
+        <item quantity="one">Last 7 days · %1$d night</item>
+        <item quantity="other">Last 7 days · %1$d nights</item>
+    </plurals>
+    <string name="weekly_not_enough">Track at least %1$d nights to see your weekly summary (%2$d so far).</string>
+    <string name="weekly_average">Average sleep %1$s</string>
+    <string name="weekly_meets">Meets the 7-hour adult guideline</string>
+    <string name="weekly_below">Below the 7-hour adult guideline</string>
+    <string name="weekly_bedtime_varied">Bedtime varied by about %1$d min</string>
+    <string name="weekly_wake_varied">Wake-up time varied by about %1$d min</string>
+    <string name="weekly_disclaimer_short">General guidance, not a medical assessment.</string>
+    <string name="weekly_details">Details</string>
+
+    <!-- Guidance screen -->
+    <string name="guidance_title">Sleep guidance</string>
+    <string name="guidance_duration_title">Sleep duration</string>
+    <string name="duration_met">Your average sleep over the last 7 days was %1$s, based on %2$d nights. That meets the general guideline of at least 7 hours for adults.</string>
+    <string name="duration_not_met">Your average sleep over the last 7 days was %1$s, based on %2$d nights. That\'s below the general guideline of at least 7 hours for adults. %3$d of %2$d nights reached 7 hours.</string>
+    <plurals name="time_in_bed_caveat">
+        <item quantity="one">%1$d of these nights uses time in bed because the morning check-in was skipped. Time in bed is usually a little longer than actual sleep.</item>
+        <item quantity="other">%1$d of these nights use time in bed because the morning check-in was skipped. Time in bed is usually a little longer than actual sleep.</item>
+    </plurals>
+    <string name="guidance_schedule_title">Sleep schedule</string>
+    <string name="schedule_text">You usually went to bed around %1$s. On average your bedtime was %2$s away from that. You usually woke around %3$s, varying by about %4$s.</string>
+    <plurals name="minutes_count">
+        <item quantity="one">%1$d minute</item>
+        <item quantity="other">%1$d minutes</item>
+    </plurals>
+    <string name="schedule_cdc">The CDC recommends going to bed and getting up at the same time every day. It doesn\'t give a number for how close is close enough, so this app describes your schedule rather than grading it.</string>
+    <string name="guidance_about_title">About these figures</string>
+    <string name="guidance_recommendation">The CDC recommends 7 or more hours of sleep for adults aged 18–60, 7–9 hours for ages 61–64, and 7–8 hours for 65 and over. The NHLBI recommends 7–9 hours for adults. This app checks against at least 7 hours, which all of these share.</string>
+    <string name="guidance_disclaimer">These are general guidelines for adults, not a medical assessment. Sleep needs vary. This app doesn\'t measure sleep stages or detect sleep disorders. If you\'re concerned about your sleep, talk to a doctor. Recommended amounts are higher for people under 18.</string>
+    <string name="guidance_source">%1$s: %2$s (page dated %3$s)</string>
+    <string name="guidance_checked">Checked on %1$s. Links open in your browser; the guidance itself is stored in the app.</string>
+
     <!-- Common -->
     <string name="save">Save</string>
     <string name="skip">Skip</string>

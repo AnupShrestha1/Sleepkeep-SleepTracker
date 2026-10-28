@@ -255,6 +255,21 @@ Changes from the list above:
 - The dashboard card and guidance screen match the wording in DESIGN §7.3.
 - The source links open in the browser.
 
+**Status:** done on the Samsung 2026-10-28.
+
+- 40 unit tests pass, 14 of them for `SleepStats`.
+- 6 instrumented tests pass.
+- On the phone: the dashboard says "Track at least 3 nights… (0 so far)" and counts up. Three
+  nights back-dated with Edit times show the weekly card and the guidance screen. The CDC link
+  opens Chrome, and Back returns to the app.
+
+Changes from the list above:
+
+- The schedule text adds one sentence: the CDC gives no number for "close enough", so the app
+  describes the schedule rather than grading it.
+- Minute counts use plurals ("1 minute").
+- The weekly card also shows during an active session.
+
 ---
 
 ## Step 7 — Settings, privacy, delete all; full test pass

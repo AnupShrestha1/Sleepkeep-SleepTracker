@@ -11,6 +11,7 @@ import com.anupshrestha.sleepkeep.data.MonitoringSegment
 import com.anupshrestha.sleepkeep.data.SessionRules
 import com.anupshrestha.sleepkeep.data.SleepRepository
 import com.anupshrestha.sleepkeep.data.SleepSession
+import com.anupshrestha.sleepkeep.guidance.SleepStats
 import com.anupshrestha.sleepkeep.monitor.MonitorController
 import com.anupshrestha.sleepkeep.monitor.MonitorStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Clock
+import java.time.Instant
 import java.time.LocalTime
 import java.time.ZoneId
 
@@ -40,6 +42,14 @@ data class DashboardUiState(
     val segments: List<MonitoringSegment> = emptyList(),
     /** Default for the "Monitor sounds" switch: what the previous session used. */
     val lastMonitoringChoice: Boolean = false,
+    val weekly: SleepStats.Weekly? = null,
+)
+
+private data class Sessions(
+    val active: SleepSession?,
+    val lastSleep: SleepSession?,
+    val now: Long,
+    val weekly: SleepStats.Weekly,
 )
 
 /** What the dashboard asks right after End sleep. */
@@ -75,22 +85,26 @@ class DashboardViewModel(
         repository.activeSession,
         repository.completedSessions,
         minuteTicker,
-    ) { active, completed, now -> Triple(active, completed.firstOrNull(), now) }
+    ) { active, completed, now ->
+        val today = Instant.ofEpochMilli(now).atZone(ZoneId.systemDefault()).toLocalDate()
+        Sessions(active, completed.firstOrNull(), now, SleepStats.weekly(completed, today))
+    }
 
     val uiState: StateFlow<DashboardUiState> = combine(
         sessions,
         monitor.status,
         activeSegments,
         repository.lastMonitoringChoice,
-    ) { (active, lastSleep, now), status, segments, lastChoice ->
+    ) { sessions, status, segments, lastChoice ->
         DashboardUiState(
             loading = false,
-            activeSession = active,
-            lastSleep = lastSleep,
-            now = now,
+            activeSession = sessions.active,
+            lastSleep = sessions.lastSleep,
+            now = sessions.now,
             monitorStatus = status,
             segments = segments,
             lastMonitoringChoice = lastChoice ?: false,
+            weekly = sessions.weekly,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DashboardUiState())
 

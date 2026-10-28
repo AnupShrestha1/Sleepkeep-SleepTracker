@@ -63,6 +63,7 @@ private enum class AfterMicPrompt { START_SESSION, START_MONITORING }
 fun DashboardScreen(
     onOpenHistory: () -> Unit,
     onOpenNight: (Long) -> Unit,
+    onOpenGuidance: () -> Unit,
     viewModel: DashboardViewModel = viewModel(factory = DashboardViewModel.Factory),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -133,6 +134,7 @@ fun DashboardScreen(
                     lastSleep != null -> LastSleepCard(lastSleep, onView = { onOpenNight(lastSleep.id) })
                     else -> EmptyCard()
                 }
+                state.weekly?.let { WeeklyCard(it, onDetails = onOpenGuidance) }
                 if (active == null) {
                     MonitorSoundsSwitch(checked = monitorSounds, onCheckedChange = { monitorChoice = it })
                 }
