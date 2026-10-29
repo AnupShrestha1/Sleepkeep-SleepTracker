@@ -32,6 +32,9 @@ interface SleepDao {
     @Query("SELECT * FROM sleep_sessions WHERE id = :id")
     fun observeSession(id: Long): Flow<SleepSession?>
 
+    @Query("SELECT EXISTS(SELECT 1 FROM sleep_sessions)")
+    fun observeHasSessions(): Flow<Boolean>
+
     /** Also deletes the session's monitoring segments and sound events (foreign-key cascade). */
     @Query("DELETE FROM sleep_sessions WHERE id = :id")
     suspend fun deleteSession(id: Long)

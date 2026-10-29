@@ -14,6 +14,10 @@ class MonitorController(private val context: Context) {
     internal val mutableStatus = MutableStateFlow<MonitorStatus>(MonitorStatus.NotRunning)
     val status: StateFlow<MonitorStatus> = mutableStatus.asStateFlow()
 
+    /** The microphone's latest level in dBFS, for the on-screen meter. Kept in memory only. */
+    internal val mutableLevel = MutableStateFlow(LoudnessDetector.MIN_DB)
+    val level: StateFlow<Float> = mutableLevel.asStateFlow()
+
     /**
      * Call only while the app is on screen: Android 14+ refuses to start a microphone service from
      * the background. Returns false if Android refused to start it.

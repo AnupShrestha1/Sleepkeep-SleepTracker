@@ -150,7 +150,7 @@
     <string name="guidance_checked">Checked on %1$s. Links open in your browser; the guidance itself is stored in the app.</string>
 
     <!-- Settings & privacy -->
-    <string name="settings_title">Settings &amp; privacy</string>
+    <string name="settings_title">Settings</string>
     <string name="privacy_title">Your data stays on this phone</string>
     <string name="privacy_on_device">Sessions, check-in answers and sound events are stored only on this phone. There\'s no account.</string>
     <string name="privacy_no_internet">The app has no internet access. Source links open in your browser.</string>
@@ -174,6 +174,76 @@
     <string name="delete_all_done">All data deleted.</string>
     <string name="app_version">Version %1$s</string>
     <string name="settings">Settings</string>
+
+    <!-- Night-sky redesign -->
+    <string name="tab_home">Home</string>
+    <string name="tab_history">History</string>
+    <string name="tab_insights">Insights</string>
+    <string name="tab_settings">Settings</string>
+
+    <string name="welcome_tagline">A calm, private sleep log.</string>
+    <string name="welcome_log_title">Log your nights</string>
+    <string name="welcome_log_text">Tap Start sleep when you go to bed and End sleep when you get up.</string>
+    <string name="welcome_sound_title">Notice loud sounds</string>
+    <string name="welcome_sound_text">Optional. Audio is analysed on your phone and never saved.</string>
+    <string name="welcome_week_title">See your week</string>
+    <string name="welcome_week_text">Compare your sleep and schedule with general adult guidance.</string>
+    <string name="welcome_get_started">Get started</string>
+    <string name="welcome_private">Your data stays on this phone</string>
+
+    <string name="greeting_morning">Good morning</string>
+    <string name="greeting_afternoon">Good afternoon</string>
+    <string name="greeting_evening">Good evening</string>
+    <string name="greeting_night">Good night</string>
+    <string name="home_subtitle_last">Here\'s your last sleep.</string>
+    <string name="home_subtitle_none">Ready when you are.</string>
+    <string name="time_in_bed_label">Time in bed</string>
+    <string name="no_check_in_short">Check-in skipped: time in bed only</string>
+    <string name="ring_of_guideline">of 7 h</string>
+    <string name="week_title">Last 7 days</string>
+    <string name="pill_meets">Meets 7 h guideline</string>
+    <string name="pill_below">Below 7 h guideline</string>
+    <plurals name="average_over_nights">
+        <item quantity="one">average over %1$d night</item>
+        <item quantity="other">average over %1$d nights</item>
+    </plurals>
+    <string name="legend_sleep">Sleep</string>
+    <string name="legend_bed_only">Time in bed only</string>
+    <string name="legend_guideline">7 h guideline</string>
+    <string name="schedule_short">Bedtime varied by about %1$d min, wake-up by about %2$d min.</string>
+
+    <string name="sleeping_title">Sleeping</string>
+    <string name="in_bed_for">In bed for</string>
+    <string name="since_time">Since %1$s</string>
+    <string name="sounds_so_far">Loud sounds so far</string>
+    <string name="sounds_none_yet">None yet.</string>
+    <string name="pill_listening">Listening</string>
+    <string name="pill_silenced">Microphone silent</string>
+    <string name="pill_off">Off</string>
+    <string name="pill_stopped">Stopped</string>
+
+    <string name="pill_seven_plus">7 h+</string>
+    <string name="night_title">Night details</string>
+    <string name="detail_fall_asleep_label">to fall asleep</string>
+    <string name="detail_awake_label">awake in the night</string>
+    <string name="legend_monitored">Monitored</string>
+    <string name="legend_not_monitored">Not monitored</string>
+    <string name="legend_loud">Loud sound</string>
+
+    <string name="insights_title">Insights</string>
+    <string name="usual_bedtime">Usual bedtime</string>
+    <string name="usual_wake_up">Usual wake-up</string>
+    <string name="varies_by">± %1$s</string>
+
+    <string name="permission_mic">Microphone</string>
+    <string name="permission_allowed">Allowed</string>
+    <string name="permission_not_allowed">Not allowed</string>
+    <string name="permission_mic_off_hint">Sound monitoring can\'t run without it.</string>
+    <string name="permission_notifications">Notifications</string>
+    <string name="permission_on">On</string>
+    <string name="permission_off">Off</string>
+    <string name="permission_notifications_off_hint">Monitoring still works, but its notification is hidden.</string>
+    <string name="settings_footer">No account · No internet · No ads</string>
 
     <!-- Common -->
     <string name="save">Save</string>

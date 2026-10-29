@@ -143,7 +143,9 @@ class SoundMonitorService : Service() {
                         lastHeartbeat = now
                         status.value = MonitorStatus.Running(sessionId)
                     }
-                    save(detector.process(now, LoudnessDetector.levelDb(buffer, read)))
+                    val level = LoudnessDetector.levelDb(buffer, read)
+                    container.monitor.mutableLevel.value = level
+                    save(detector.process(now, level))
                 }
 
                 val current = segmentId

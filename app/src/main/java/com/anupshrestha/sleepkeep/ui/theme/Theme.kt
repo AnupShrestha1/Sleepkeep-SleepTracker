@@ -1,34 +1,60 @@
 package com.anupshrestha.sleepkeep.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
-private val LightColors = lightColorScheme(
-    primary = Indigo40,
-    onPrimary = White,
-    primaryContainer = Indigo90,
-    onPrimaryContainer = Indigo10,
+// Always dark: the app is used at bedtime, and the whole look is built around a night sky.
+private val NightColors = darkColorScheme(
+    primary = Lavender,
+    onPrimary = OnLavender,
+    primaryContainer = LavenderContainer,
+    onPrimaryContainer = OnLavenderContainer,
+    secondary = MoonGold,
+    onSecondary = OnMoonGold,
+    tertiary = Mint,
+    onTertiary = OnMint,
+    error = Coral,
+    background = NightDeep,
+    onBackground = TextPrimary,
+    surface = Surface,
+    onSurface = TextPrimary,
+    surfaceVariant = SurfaceHigh,
+    onSurfaceVariant = TextSecondary,
+    surfaceContainerLowest = NightDeep,
+    surfaceContainerLow = SurfaceLow,
+    surfaceContainer = SurfaceMid,
+    surfaceContainerHigh = SurfaceHigh,
+    surfaceContainerHighest = SurfaceHighest,
+    outline = Outline,
+    outlineVariant = OutlineSoft,
 )
 
-private val DarkColors = darkColorScheme(
-    primary = Indigo80,
-    onPrimary = Indigo20,
-    primaryContainer = Indigo30,
-    onPrimaryContainer = Indigo90,
+private val base = Typography()
+
+private val NightTypography = base.copy(
+    displayMedium = base.displayMedium.copy(fontWeight = FontWeight.SemiBold, letterSpacing = (-0.5).sp),
+    displaySmall = base.displaySmall.copy(fontWeight = FontWeight.SemiBold, letterSpacing = (-0.5).sp),
+    headlineLarge = base.headlineLarge.copy(fontWeight = FontWeight.SemiBold),
+    headlineMedium = base.headlineMedium.copy(fontWeight = FontWeight.SemiBold),
+    headlineSmall = base.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
+    titleLarge = base.titleLarge.copy(fontWeight = FontWeight.SemiBold),
+    titleMedium = base.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+    labelLarge = base.labelLarge.copy(fontWeight = FontWeight.SemiBold),
 )
 
-// Follows the system light/dark setting. Wallpaper-based dynamic colour is left off so the app
-// looks the same on every phone.
+/** Big numbers such as "7 h 28 m". */
+val NumberStyle = TextStyle(fontSize = 40.sp, fontWeight = FontWeight.SemiBold, letterSpacing = (-1).sp)
+
 @Composable
-fun SleepkeepTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit,
-) {
+fun SleepkeepTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = if (darkTheme) DarkColors else LightColors,
+        colorScheme = NightColors,
+        typography = NightTypography,
         content = content,
     )
 }

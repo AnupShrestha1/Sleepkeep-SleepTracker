@@ -22,3 +22,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Design inspiration images (not ours to publish)
+designs/

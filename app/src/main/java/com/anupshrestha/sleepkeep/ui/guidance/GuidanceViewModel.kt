@@ -16,11 +16,16 @@ import java.time.Clock
 import java.time.LocalDate
 import java.time.ZoneId
 
+data class InsightsState(val weekly: SleepStats.Weekly, val nights: List<SleepStats.NightBar>)
+
 class GuidanceViewModel(repository: SleepRepository, clock: Clock) : ViewModel() {
 
     /** `null` while loading. */
-    val weekly: StateFlow<SleepStats.Weekly?> = repository.completedSessions
-        .map { SleepStats.weekly(it, LocalDate.now(clock.withZone(ZoneId.systemDefault()))) }
+    val state: StateFlow<InsightsState?> = repository.completedSessions
+        .map {
+            val today = LocalDate.now(clock.withZone(ZoneId.systemDefault()))
+            InsightsState(SleepStats.weekly(it, today), SleepStats.lastSevenNights(it, today))
+        }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     companion object {

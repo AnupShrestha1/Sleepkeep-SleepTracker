@@ -3,9 +3,8 @@ package com.anupshrestha.sleepkeep.ui.night
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -24,13 +24,19 @@ import com.anupshrestha.sleepkeep.data.MonitoringSegment
 import com.anupshrestha.sleepkeep.data.SleepSession
 import com.anupshrestha.sleepkeep.data.SoundEvent
 import com.anupshrestha.sleepkeep.monitor.Coverage
+import com.anupshrestha.sleepkeep.ui.common.Hint
+import com.anupshrestha.sleepkeep.ui.common.IconBadge
+import com.anupshrestha.sleepkeep.ui.common.LegendItem
+import com.anupshrestha.sleepkeep.ui.common.NightCard
+import com.anupshrestha.sleepkeep.ui.common.NightTimeline
+import com.anupshrestha.sleepkeep.ui.common.SoundEventRow
 import com.anupshrestha.sleepkeep.ui.common.formatClock
 import com.anupshrestha.sleepkeep.ui.common.formatDuration
 
 /** Events beyond this are behind a "Show all" button, so a noisy night stays readable. */
 private const val EVENTS_SHOWN = 20
 
-/** Coverage, gaps and loud sounds for one night. Shown only if monitoring was on. */
+/** Timeline, coverage, gaps and loud sounds for one night. Shown only if monitoring was on. */
 @Composable
 fun SoundSection(session: SleepSession, segments: List<MonitoringSegment>, events: List<SoundEvent>) {
     val end = session.endTime ?: return
@@ -38,70 +44,61 @@ fun SoundSection(session: SleepSession, segments: List<MonitoringSegment>, event
     val coverage = Coverage.of(session.startTime, end, segments)
     var showAll by rememberSaveable { mutableStateOf(false) }
 
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(stringResource(R.string.sound_title), style = MaterialTheme.typography.titleMedium)
-            Text(
+    NightCard {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            IconBadge(R.drawable.ic_sound)
+            Column(Modifier.weight(1f)) {
+                Text(stringResource(R.string.sound_title), style = MaterialTheme.typography.titleMedium)
+                Text(
+                    if (events.isEmpty()) stringResource(R.string.sound_none)
+                    else pluralStringResource(R.plurals.sound_count, events.size, events.size),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+
+        NightTimeline(session.startTime, end, segments, events)
+        Row(Modifier.fillMaxWidth()) {
+            Hint(formatClock(session.startTime, zone), Modifier.weight(1f))
+            Hint(formatClock(end, zone))
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+            LegendItem(MaterialTheme.colorScheme.primary, stringResource(R.string.legend_monitored))
+            LegendItem(MaterialTheme.colorScheme.outline, stringResource(R.string.legend_not_monitored))
+            LegendItem(MaterialTheme.colorScheme.secondary, stringResource(R.string.legend_loud))
+        }
+        Text(
+            stringResource(
+                R.string.sound_coverage,
+                formatDuration(coverage.monitoredMillis),
+                formatDuration(end - session.startTime),
+            ),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        coverage.gaps.forEach { gap ->
+            Hint(
                 stringResource(
-                    R.string.sound_coverage,
-                    formatDuration(coverage.monitoredMillis),
-                    formatDuration(end - session.startTime),
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            coverage.gaps.forEach { gap ->
-                Text(
-                    stringResource(
-                        R.string.sound_gap,
-                        formatClock(gap.start, zone),
-                        formatClock(gap.end, zone),
-                        stringResource(gapReasonText(gap.reason)),
-                    ),
-                    style = MaterialTheme.typography.bodySmall,
+                    R.string.sound_gap,
+                    formatClock(gap.start, zone),
+                    formatClock(gap.end, zone),
+                    stringResource(gapReasonText(gap.reason)),
                 )
-            }
-
-            HorizontalDivider()
-
-            Text(
-                if (events.isEmpty()) stringResource(R.string.sound_none)
-                else pluralStringResource(R.plurals.sound_count, events.size, events.size),
-                style = MaterialTheme.typography.bodyMedium,
             )
+        }
+
+        if (events.isNotEmpty()) {
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             val shown = if (showAll) events else events.take(EVENTS_SHOWN)
-            shown.forEach { event ->
-                Text(
-                    stringResource(
-                        R.string.sound_event,
-                        formatClock(event.startTime, zone),
-                        formatEventLength(event.endTime - event.startTime),
-                        stringResource(loudnessText(event.peakAboveBackgroundDb)),
-                    ),
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            }
+            shown.forEach { SoundEventRow(it, zone) }
             if (!showAll && events.size > EVENTS_SHOWN) {
                 TextButton(onClick = { showAll = true }) {
                     Text(stringResource(R.string.sound_show_all, events.size))
                 }
             }
-            Text(stringResource(R.string.sound_note), style = MaterialTheme.typography.bodySmall)
         }
+        Hint(stringResource(R.string.sound_note))
     }
-}
-
-/** "3 s" for short sounds, otherwise the usual "1 h 2 m" / "4 m". */
-@Composable
-private fun formatEventLength(millis: Long): String =
-    if (millis < 60_000) stringResource(R.string.duration_s, ((millis + 999) / 1000).coerceAtLeast(1))
-    else formatDuration(millis)
-
-/** Words, not numbers: phone microphones aren't calibrated. */
-@StringRes
-private fun loudnessText(aboveBackgroundDb: Float): Int = when {
-    aboveBackgroundDb >= 35f -> R.string.loudness_very_loud
-    aboveBackgroundDb >= 25f -> R.string.loudness_loud
-    else -> R.string.loudness_moderate
 }
 
 @StringRes

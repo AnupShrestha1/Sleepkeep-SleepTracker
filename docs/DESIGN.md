@@ -32,6 +32,24 @@ decisions taken during review.
 
 ## 2. Screens and flows
 
+> **Visual style (2026-10-29).** A night-sky redesign based on the samples in `designs/`, which
+> replaces the plain layouts sketched below.
+>
+> - **Look:** always dark, with a navy gradient, lavender highlights, moon-gold accents and
+>   rounded cards.
+> - **Tabs:** Home, History, Insights and Settings.
+> - **New pieces:**
+>   - a welcome screen until the first session
+>   - a sleeping view with a ring timer and a live microphone-level strip
+>   - 7-day bar charts with a dashed 7 h guideline line
+>   - a monitored/not-monitored timeline with loud-sound ticks on each night's page
+>
+> Left out of the samples on purpose: "possible snoring" labels, Good/Fair grades, a
+> consistency score, age settings, and "automatic" tracking claims. They conflict with §1.
+> Per-night history cards show a factual "7 h+" marker instead of a grade.
+>
+> The flows below are unchanged.
+
 Five screens, one activity, Material 3. Light or dark follows the system. No animations
 beyond Material defaults.
 

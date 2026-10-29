@@ -139,6 +139,28 @@ class SleepStatsTest {
         assertEquals((9 + 8 + 8) * hour / 3, result.averageSleepMillis)
     }
 
+    // Chart data
+
+    @Test
+    fun `last seven nights has a slot per day with gaps and no naps`() {
+        val bars = SleepStats.lastSevenNights(
+            listOf(
+                night(1, 26, 23, 0, 7, 0), // 8 h, checked in
+                night(2, 28, 23, 0, 6, 0, fallAsleep = null), // 7 h, time in bed only
+                session(3, at(28, 14), at(28, 15), fallAsleep = 0), // nap
+            ),
+            today,
+        )
+        assertEquals(7, bars.size)
+        assertEquals(LocalDate.of(2026, 10, 22), bars.first().date)
+        assertEquals(today, bars.last().date)
+        assertEquals(8 * hour, bars[4].sleepMillis)
+        assertEquals(null, bars[5].sleepMillis)
+        assertEquals(7 * hour, bars[6].sleepMillis)
+        assertTrue(bars[6].timeInBedOnly)
+        assertFalse(bars[4].timeInBedOnly)
+    }
+
     // Consistency
 
     @Test

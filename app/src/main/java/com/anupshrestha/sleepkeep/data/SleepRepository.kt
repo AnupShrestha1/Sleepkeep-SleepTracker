@@ -17,6 +17,7 @@ class SleepRepository(
 
     val activeSession: Flow<SleepSession?> = dao.observeActiveSession()
     val completedSessions: Flow<List<SleepSession>> = dao.observeCompletedSessions()
+    val hasSessions: Flow<Boolean> = dao.observeHasSessions()
 
     sealed interface StartResult {
         data class Started(val sessionId: Long) : StartResult

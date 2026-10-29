@@ -3,6 +3,34 @@
 Companion to [DESIGN.md](DESIGN.md). There are eight steps, and each one ends in a build that
 installs and runs on both phones.
 
+## Overall progress (2026-10-28)
+
+All eight steps are built and committed. Each step's **Status** below has the details.
+
+| Step | Commit | State |
+|---|---|---|
+| 1 | `2404e3c` | Done, both phones |
+| 2 | `c372b87` | Done, both phones |
+| 3 | `7cd7225` | Done on the Samsung; Xiaomi not checked |
+| 4 | `0e972ad` | Done on the Samsung; Xiaomi not checked |
+| 5 | `aac2e34` | Done on the Samsung; Xiaomi not checked |
+| 6 | `2254d8b` | Done on the Samsung; Xiaomi not checked |
+| 7 | `570b28d` | Code done; overnight tests to do |
+| 8 | `11eb38d` | Prepared; signing key and Play Console to do |
+
+47 tests pass (40 unit, 7 instrumented).
+
+Open items, in order:
+
+1. Overnight runs: at least 2 nights per phone, logged in [TEST_LOG.md](TEST_LOG.md).
+2. The Xiaomi checks for steps 3–7.
+3. Not yet tried: a phone call during monitoring, a restart mid-session, and the
+   long-session prompt on a real session.
+4. From the nights: tune the thresholds and decide on a wake lock.
+5. Set the version to 1.0.0.
+6. Upload key, privacy policy placeholders, signed bundle and Play Console
+   ([RELEASE.md](RELEASE.md)).
+
 ## How each step runs
 
 1. I explain what the step builds and list the exact files.

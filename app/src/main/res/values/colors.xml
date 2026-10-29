@@ -2,4 +2,5 @@
 <resources>
     <color name="ic_launcher_background">#1B2340</color>
     <color name="ic_launcher_moon">#F2E6B8</color>
+    <color name="night_deep">#0A0E24</color>
 </resources>

@@ -11,6 +11,7 @@ import com.anupshrestha.sleepkeep.data.MonitoringSegment
 import com.anupshrestha.sleepkeep.data.SessionRules
 import com.anupshrestha.sleepkeep.data.SleepRepository
 import com.anupshrestha.sleepkeep.data.SleepSession
+import com.anupshrestha.sleepkeep.data.SoundEvent
 import com.anupshrestha.sleepkeep.guidance.SleepStats
 import com.anupshrestha.sleepkeep.monitor.MonitorController
 import com.anupshrestha.sleepkeep.monitor.MonitorStatus
@@ -43,6 +44,10 @@ data class DashboardUiState(
     /** Default for the "Monitor sounds" switch: what the previous session used. */
     val lastMonitoringChoice: Boolean = false,
     val weekly: SleepStats.Weekly? = null,
+    /** The last 7 days for the mini chart, oldest first. */
+    val nights: List<SleepStats.NightBar> = emptyList(),
+    /** Loud sounds so far in the active session, oldest first. */
+    val activeEvents: List<SoundEvent> = emptyList(),
 )
 
 private data class Sessions(
@@ -50,6 +55,7 @@ private data class Sessions(
     val lastSleep: SleepSession?,
     val now: Long,
     val weekly: SleepStats.Weekly,
+    val nights: List<SleepStats.NightBar>,
 )
 
 /** What the dashboard asks right after End sleep. */
@@ -81,13 +87,20 @@ class DashboardViewModel(
         if (active == null) flowOf(emptyList()) else repository.observeSegments(active.id)
     }
 
+    private val activeEvents = repository.activeSession.flatMapLatest { active ->
+        if (active == null) flowOf(emptyList()) else repository.observeSoundEvents(active.id)
+    }
+
     private val sessions = combine(
         repository.activeSession,
         repository.completedSessions,
         minuteTicker,
     ) { active, completed, now ->
         val today = Instant.ofEpochMilli(now).atZone(ZoneId.systemDefault()).toLocalDate()
-        Sessions(active, completed.firstOrNull(), now, SleepStats.weekly(completed, today))
+        Sessions(
+            active, completed.firstOrNull(), now,
+            SleepStats.weekly(completed, today), SleepStats.lastSevenNights(completed, today),
+        )
     }
 
     val uiState: StateFlow<DashboardUiState> = combine(
@@ -95,7 +108,8 @@ class DashboardViewModel(
         monitor.status,
         activeSegments,
         repository.lastMonitoringChoice,
-    ) { sessions, status, segments, lastChoice ->
+        activeEvents,
+    ) { sessions, status, segments, lastChoice, events ->
         DashboardUiState(
             loading = false,
             activeSession = sessions.active,
@@ -105,8 +119,13 @@ class DashboardViewModel(
             segments = segments,
             lastMonitoringChoice = lastChoice ?: false,
             weekly = sessions.weekly,
+            nights = sessions.nights,
+            activeEvents = events,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DashboardUiState())
+
+    /** The microphone's live level, for the meter on the sleeping screen. */
+    val liveLevel: StateFlow<Float> = monitor.level
 
     private val _prompt = MutableStateFlow<EndPrompt?>(null)
     val prompt: StateFlow<EndPrompt?> = _prompt.asStateFlow()

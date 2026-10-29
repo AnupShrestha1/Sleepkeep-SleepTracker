@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Window theme shown before Compose draws; Compose's MaterialTheme does the rest. -->
-    <style name="Theme.Sleepkeep" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Window theme shown before Compose draws: the same deep navy as the app, always dark. -->
+    <style name="Theme.Sleepkeep" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/night_deep</item>
+    </style>
 </resources>

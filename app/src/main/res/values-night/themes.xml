@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Dark window background in dark mode, so the app doesn't flash white at launch. -->
-    <style name="Theme.Sleepkeep" parent="android:Theme.Material.NoActionBar" />
-</resources>

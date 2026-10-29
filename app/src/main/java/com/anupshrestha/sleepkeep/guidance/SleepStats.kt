@@ -36,6 +36,22 @@ object SleepStats {
             }
             .toSet()
 
+    /** One day in a 7-day chart; [sleepMillis] is `null` when no night ended that day. */
+    data class NightBar(val date: LocalDate, val sleepMillis: Long?, val timeInBedOnly: Boolean)
+
+    /** The last 7 days, oldest first, with each day's main sleep (naps left out). */
+    fun lastSevenNights(sessions: List<SleepSession>, today: LocalDate): List<NightBar> {
+        val naps = napIds(sessions)
+        val byDate = sessions
+            .filter { it.endTime != null && it.id !in naps }
+            .associateBy { nightDate(it) }
+        return (SleepGuidelines.WINDOW_DAYS - 1 downTo 0).map { daysAgo ->
+            val date = today.minusDays(daysAgo.toLong())
+            val night = byDate[date]
+            NightBar(date, night?.sleepEstimateMillis(), night != null && !night.hasCheckIn)
+        }
+    }
+
     /** A clock time that's usual for this person, and how far the nights typically were from it. */
     data class TimeConsistency(val usualMinuteOfDay: Int, val averageDifferenceMinutes: Int)
 
