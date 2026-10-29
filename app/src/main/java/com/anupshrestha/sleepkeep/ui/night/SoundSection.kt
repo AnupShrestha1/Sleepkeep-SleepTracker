@@ -108,4 +108,5 @@ private fun gapReasonText(reason: Coverage.GapReason): Int = when (reason) {
     Coverage.GapReason.MIC_SILENCED -> R.string.gap_mic_silenced
     Coverage.GapReason.MIC_ERROR -> R.string.gap_mic_error
     Coverage.GapReason.STOPPED_UNEXPECTEDLY -> R.string.gap_stopped_unexpectedly
+    Coverage.GapReason.SOUNDS_PLAYING -> R.string.gap_sounds_playing
 }

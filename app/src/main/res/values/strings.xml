@@ -278,6 +278,30 @@
     <string name="rested_needs">Answer \"How rested do you feel?\" in the morning check-in on at least 3 nights in this period to see this.</string>
     <string name="rested_note">Your own answers, not a measurement. A difference here shows a pattern in how you felt, not what caused it.</string>
 
+    <!-- Sleep sounds -->
+    <string name="sounds_title">Sleep sounds</string>
+    <string name="sounds_subtitle">Real rain, storm and ocean recordings, plus noise. Fades out when the timer ends.</string>
+    <string name="sound_credits">Rain, storm and ocean recordings from BigSoundBank.com (CC0, public domain).</string>
+    <string name="sound_rain">Rain</string>
+    <string name="sound_storm">Storm</string>
+    <string name="sound_ocean">Ocean</string>
+    <string name="sound_white">White noise</string>
+    <string name="sound_pink">Pink noise</string>
+    <string name="sound_brown">Brown noise</string>
+    <string name="sounds_timer_label">Stop after</string>
+    <string name="sounds_minutes">%1$d min</string>
+    <string name="sounds_until_stopped">No timer</string>
+    <string name="sounds_play">Play</string>
+    <string name="sounds_stop">Stop sound</string>
+    <string name="sounds_playing">Playing %1$s</string>
+    <string name="sounds_stops_at">Fades out by %1$s</string>
+    <string name="sounds_no_timer">Plays until you stop it</string>
+    <string name="sounds_pauses_monitoring">Sound monitoring pauses while this plays, so the sound isn\'t counted as loud sounds.</string>
+    <string name="sounds_channel">Sleep sounds</string>
+    <string name="pill_paused">Paused</string>
+    <string name="monitor_paused_for_sounds">Listening is paused while sleep sounds play. It resumes when they stop.</string>
+    <string name="gap_sounds_playing">sleep sounds were playing.</string>
+
     <!-- Common -->
     <string name="save">Save</string>
     <string name="skip">Skip</string>

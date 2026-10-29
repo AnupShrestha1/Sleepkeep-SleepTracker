@@ -128,6 +128,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel(factory = SettingsVi
                 stringResource(R.string.settings_footer),
                 Modifier.padding(top = 6.dp),
             )
+            Hint(stringResource(R.string.sound_credits), Modifier.padding(top = 6.dp))
         }
         Spacer(Modifier.height(8.dp))
     }

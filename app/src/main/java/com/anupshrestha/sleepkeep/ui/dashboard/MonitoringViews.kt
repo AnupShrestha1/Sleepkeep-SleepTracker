@@ -66,6 +66,7 @@ fun MonitoringStatusCard(
     val zone = session.zoneId
     val running = status is MonitorStatus.Running && status.sessionId == session.id
     val silencedSince = if (running) status.silencedSince else null
+    val pausedForSounds = running && status.pausedForSounds
     val last = segments.lastOrNull()
     // An open segment while nothing runs belongs to a killed service; it's closed at its heartbeat.
     val lastStop = last?.let { it.endTime ?: it.lastHeartbeat }
@@ -77,6 +78,10 @@ fun MonitoringStatusCard(
     data class Line(val pill: Int, val color: Color, val text: String, val action: Int, val onAction: () -> Unit)
 
     val line = when {
+        pausedForSounds -> Line(
+            R.string.pill_paused, MaterialTheme.colorScheme.primary, stringResource(R.string.monitor_paused_for_sounds),
+            R.string.stop_monitoring, onStop,
+        )
         silencedSince != null -> Line(
             R.string.pill_silenced, warn,
             stringResource(R.string.monitor_silenced, formatClock(silencedSince, zone)),

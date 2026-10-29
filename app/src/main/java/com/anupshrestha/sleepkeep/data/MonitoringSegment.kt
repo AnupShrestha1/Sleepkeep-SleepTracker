@@ -36,4 +36,7 @@ object EndReason {
     const val MIC_SILENCED = "MIC_SILENCED"
     const val MIC_ERROR = "MIC_ERROR"
     const val STOPPED_UNEXPECTEDLY = "STOPPED_UNEXPECTEDLY"
+
+    /** Paused while sleep sounds played, so the speaker isn't counted as loud sounds. */
+    const val SOUNDS_PLAYING = "SOUNDS_PLAYING"
 }

@@ -62,6 +62,18 @@ class CoverageTest {
     }
 
     @Test
+    fun `pause for sleep sounds is its own gap reason`() {
+        val result = Coverage.of(
+            0, 8 * hour,
+            listOf(
+                segment(0, 10 * minute, EndReason.SOUNDS_PLAYING),
+                segment(40 * minute, 8 * hour, EndReason.SESSION_ENDED),
+            ),
+        )
+        assertEquals(listOf(Gap(10 * minute, 40 * minute, GapReason.SOUNDS_PLAYING)), result.gaps)
+    }
+
+    @Test
     fun `gaps under two minutes are ignored`() {
         val result = Coverage.of(0, 8 * hour, listOf(segment(30_000, 8 * hour, EndReason.SESSION_ENDED)))
         assertEquals(emptyList<Gap>(), result.gaps)

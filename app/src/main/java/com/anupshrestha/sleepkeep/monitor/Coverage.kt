@@ -6,7 +6,7 @@ import com.anupshrestha.sleepkeep.data.MonitoringSegment
 /** How much of a session was actually monitored, and why the rest wasn't. Plain Kotlin. */
 object Coverage {
 
-    enum class GapReason { NOT_RUNNING, USER_STOPPED, MIC_SILENCED, MIC_ERROR, STOPPED_UNEXPECTEDLY }
+    enum class GapReason { NOT_RUNNING, USER_STOPPED, MIC_SILENCED, MIC_ERROR, STOPPED_UNEXPECTEDLY, SOUNDS_PLAYING }
 
     data class Gap(val start: Long, val end: Long, val reason: GapReason)
 
@@ -40,6 +40,7 @@ object Coverage {
         EndReason.USER_STOPPED -> GapReason.USER_STOPPED
         EndReason.MIC_SILENCED -> GapReason.MIC_SILENCED
         EndReason.MIC_ERROR -> GapReason.MIC_ERROR
+        EndReason.SOUNDS_PLAYING -> GapReason.SOUNDS_PLAYING
         EndReason.STOPPED_UNEXPECTEDLY, null -> GapReason.STOPPED_UNEXPECTEDLY
         // SESSION_ENDED: a gap after it only appears if the end time was edited later.
         else -> GapReason.NOT_RUNNING

@@ -123,6 +123,21 @@ class SoundMonitorService : Service() {
                     return
                 }
 
+                // While sleep sounds play, the microphone hears the speaker. Pause listening (a gap
+                // labelled "sleep sounds were playing") instead of logging rain as loud sounds.
+                if (container.sounds.isPlaying) {
+                    val current = segmentId
+                    if (current != null) {
+                        save(detector.flush(now))
+                        repository.closeSegment(current, now, EndReason.SOUNDS_PLAYING)
+                        segmentId = null
+                        status.value = MonitorStatus.Running(sessionId, pausedForSounds = true)
+                    }
+                    container.monitor.mutableLevel.value = LoudnessDetector.MIN_DB
+                    silentMillis = 0
+                    continue
+                }
+
                 // Exact digital silence means the microphone is being withheld: another app is
                 // recording (e.g. a call) or the user turned the microphone off (Android 12+).
                 // A real room always has some noise.

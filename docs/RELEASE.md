@@ -10,6 +10,7 @@ _verify_ in Play Console when you get there.
 - [ ] Xiaomi checks for steps 3–7 done.
 - [ ] `versionCode` / `versionName` in `app/build.gradle.kts` set for release (suggested: `1` /
       `1.0.0`). Raise `versionCode` by one for every upload after that.
+- [x] Sleep sound recordings are CC0 (public domain) from BigSoundBank.com: Rain on car roof #1293, Rain and storm in a tent #0820, Sea waves #0698. No attribution is required; Settings credits the site anyway. The bundle grew to about 22 MB.
 - [ ] Optional: update the libraries lint flags as outdated. Each update needs a full retest, so
       skip it if everything works.
 - [x] Target API 36: required for new apps since 2026-08-31, and already set.
@@ -90,7 +91,7 @@ For a phone test of release code before uploading, use `gradlew.bat assembleProf
 | **Privacy policy** | Fill in the placeholders in [PRIVACY_POLICY.md](PRIVACY_POLICY.md) (date, developer name, contact email), push, then use `https://github.com/AnupShrestha1/Sleepkeep-SleepTracker/blob/main/docs/PRIVACY_POLICY.md`. The repo is public. If you make it private, host the policy somewhere public first. |
 | **Data safety** | "Does your app collect or share any of the required user data types?" → **No**. Google's rule: data "only processed locally on the user's device and not sent off device does not need to be disclosed". The form and the privacy policy link are still required. |
 | **Health apps declaration** | Required for every app. Select **Health and fitness → Sleep Management**. Not a medical device. No health research. |
-| **Foreground service permissions** | Type **microphone**. Use case: closest preset to background audio capture, or "Other". Description and user impact below. Needs a **video link** (an unlisted YouTube video is fine). |
+| **Foreground service permissions** | Two types now. **mediaPlayback** for sleep sounds: use case "Media playback"; the video shows choosing a sound, Play, then the screen turning off while it keeps playing. **microphone**: Use case: closest preset to background audio capture, or "Other". Description and user impact below. Needs a **video link** (an unlisted YouTube video is fine). |
 | **App access** | All functionality is available without login or special access. |
 | **Ads** | No ads. |
 | **Content rating** | Questionnaire: no violence, sexuality, gambling or user-generated content. Expect the lowest rating. |

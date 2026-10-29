@@ -46,6 +46,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.anupshrestha.sleepkeep.R
+import com.anupshrestha.sleepkeep.SleepApp
 import com.anupshrestha.sleepkeep.data.SleepSession
 import com.anupshrestha.sleepkeep.data.hasCheckIn
 import com.anupshrestha.sleepkeep.data.sleepEstimateMillis
@@ -76,6 +77,7 @@ import com.anupshrestha.sleepkeep.ui.common.monitoringPermissions
 import com.anupshrestha.sleepkeep.ui.common.notificationsEnabled
 import com.anupshrestha.sleepkeep.ui.common.openAppSettings
 import com.anupshrestha.sleepkeep.ui.common.timeErrorText
+import com.anupshrestha.sleepkeep.ui.sounds.SleepSoundsCard
 import com.anupshrestha.sleepkeep.ui.theme.MoonGold
 import com.anupshrestha.sleepkeep.ui.theme.NumberStyle
 import kotlinx.coroutines.flow.StateFlow
@@ -158,7 +160,11 @@ fun DashboardScreen(
                         onOpenSettings = { openAppSettings(context) },
                     )
                 },
-                onEnd = viewModel::endSleep,
+                onEnd = {
+                    viewModel.endSleep()
+                    // Morning: any sleep sound still playing stops with the session.
+                    (context.applicationContext as SleepApp).container.sounds.stop()
+                },
             )
         } else {
             HomeContent(
@@ -235,6 +241,7 @@ private fun HomeContent(
     state.weekly?.let { WeekCard(it, state.nights) }
     MonitorSoundsSwitch(checked = monitorSounds, onCheckedChange = onMonitorChange)
     PillButton(stringResource(R.string.start_sleep), R.drawable.ic_moon, onStart)
+    SleepSoundsCard(monitoring = monitorSounds)
 }
 
 private fun greeting(now: Long): Int {
@@ -416,6 +423,7 @@ private fun ColumnScope.SleepingContent(
         }
     }
 
+    SleepSoundsCard(monitoring = session.monitoringRequested)
     PillButton(stringResource(R.string.end_sleep), R.drawable.ic_stop, onEnd)
 }
 
