@@ -39,6 +39,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.anupshrestha.sleepkeep.R
 import com.anupshrestha.sleepkeep.ui.common.Hint
 import com.anupshrestha.sleepkeep.ui.common.IconBadge
+import com.anupshrestha.sleepkeep.ui.common.MoonLogo
 import com.anupshrestha.sleepkeep.ui.common.NightCard
 import com.anupshrestha.sleepkeep.ui.common.ScreenHeader
 import com.anupshrestha.sleepkeep.ui.common.StatusPill
@@ -119,7 +120,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel(factory = SettingsVi
                 .padding(top = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Icon(painterResource(R.drawable.ic_moon), contentDescription = null, tint = MoonGold, modifier = Modifier.size(36.dp))
+            MoonLogo(72.dp)
             Spacer(Modifier.height(8.dp))
             Text(stringResource(R.string.app_name), style = MaterialTheme.typography.titleMedium)
             version?.let { Hint(stringResource(R.string.app_version, it), Modifier.padding(top = 2.dp)) }

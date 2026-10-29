@@ -161,6 +161,66 @@ class SleepStatsTest {
         assertFalse(bars[4].timeInBedOnly)
     }
 
+    // Trends
+
+    @Test
+    fun `thirty-day window has a slot per day and carries clock times`() {
+        val bars = SleepStats.lastNights(listOf(night(1, 28, 23, 30, 6, 45)), today, 30)
+        assertEquals(30, bars.size)
+        assertEquals(LocalDate.of(2026, 9, 29), bars.first().date)
+        assertEquals(23 * 60 + 30, bars.last().bedMinute)
+        assertEquals(6 * 60 + 45, bars.last().wakeMinute)
+        assertEquals(null, bars[0].bedMinute)
+    }
+
+    @Test
+    fun `summary over 30 days includes nights older than a week`() {
+        val nights = listOf(
+            night(1, 5, 23, 0, 7, 0), night(2, 6, 23, 0, 7, 0), night(3, 7, 23, 0, 7, 0),
+        )
+        assertEquals(SleepStats.Weekly.NotEnoughData(0), SleepStats.weekly(nights, today))
+        val month = SleepStats.weekly(nights, today, 30) as SleepStats.Weekly.Summary
+        assertEquals(3, month.nights)
+    }
+
+    @Test
+    fun `rolling average needs three nights in the window`() {
+        val bars = SleepStats.lastNights(
+            listOf(night(1, 26, 23, 0, 7, 0), night(2, 27, 23, 0, 6, 0), night(3, 28, 23, 0, 5, 0)),
+            today, 7,
+        )
+        val rolling = SleepStats.rollingAverage(bars)
+        assertEquals(null, rolling[5]) // only two nights so far
+        assertEquals(7 * hour, rolling[6]) // (8 + 7 + 6) / 3
+    }
+
+    @Test
+    fun `weekdays and weekend are compared separately`() {
+        // 24 and 25 Oct 2026 are Saturday and Sunday.
+        val result = SleepStats.weekdayWeekend(
+            listOf(
+                night(1, 22, 23, 0, 6, 0), // Thu, 7 h
+                night(2, 23, 23, 0, 6, 0), // Fri, 7 h
+                night(3, 24, 0, 30, 9, 30), // Sat, 9 h
+                night(4, 25, 0, 30, 9, 30), // Sun, 9 h
+            ),
+            today, 30,
+        )
+        assertEquals(7 * hour, result.weekdays!!.averageSleepMillis)
+        assertEquals(9 * hour, result.weekend!!.averageSleepMillis)
+        assertEquals(23 * 60, result.weekdays.bedtime.usualMinuteOfDay)
+        assertEquals(30, result.weekend.bedtime.usualMinuteOfDay)
+    }
+
+    @Test
+    fun `a side with fewer than two nights is left empty`() {
+        val result = SleepStats.weekdayWeekend(
+            listOf(night(1, 22, 23, 0, 6, 0), night(2, 23, 23, 0, 6, 0), night(3, 24, 0, 30, 9, 30)),
+            today, 30,
+        )
+        assertEquals(null, result.weekend)
+    }
+
     // Consistency
 
     @Test

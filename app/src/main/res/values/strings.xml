@@ -245,6 +245,24 @@
     <string name="permission_notifications_off_hint">Monitoring still works, but its notification is hidden.</string>
     <string name="settings_footer">No account · No internet · No ads</string>
 
+    <!-- Trends -->
+    <string name="range_week">Week</string>
+    <string name="range_month">Month</string>
+    <string name="range_quarter">3 months</string>
+    <string name="last_days">Last %1$d days</string>
+    <string name="legend_rolling">7-night average</string>
+    <string name="duration_met_days">Your average sleep over the last %3$d days was %1$s, based on %2$d nights. That meets the general guideline of at least 7 hours for adults.</string>
+    <string name="duration_not_met_days">Your average sleep over the last %4$d days was %1$s, based on %2$d nights. That\'s below the general guideline of at least 7 hours for adults. %3$d of %2$d nights reached 7 hours.</string>
+    <string name="bedtime_chart_hint">Each bar runs from bedtime to wake-up.</string>
+    <string name="ww_title">Weekdays and weekends</string>
+    <string name="ww_weekdays">Weekday nights</string>
+    <string name="ww_weekend">Weekend nights</string>
+    <string name="ww_bed_around">Bed around %1$s</string>
+    <string name="ww_needs">Needs at least 2 weekday nights and 2 weekend nights (Friday and Saturday) in this period.</string>
+    <string name="ww_more_weekend">You sleep about %1$s more on weekends.</string>
+    <string name="ww_less_weekend">You sleep about %1$s less on weekends.</string>
+    <string name="ww_similar">Your weekday and weekend sleep are about the same length.</string>
+
     <!-- Common -->
     <string name="save">Save</string>
     <string name="skip">Skip</string>

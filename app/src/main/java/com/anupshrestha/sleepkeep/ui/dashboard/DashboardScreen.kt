@@ -55,6 +55,7 @@ import com.anupshrestha.sleepkeep.guidance.SleepStats
 import com.anupshrestha.sleepkeep.monitor.MonitorStatus
 import com.anupshrestha.sleepkeep.ui.common.Hint
 import com.anupshrestha.sleepkeep.ui.common.IconBadge
+import com.anupshrestha.sleepkeep.ui.common.MoonLogo
 import com.anupshrestha.sleepkeep.ui.common.LEVEL_BARS
 import com.anupshrestha.sleepkeep.ui.common.LabeledValue
 import com.anupshrestha.sleepkeep.ui.common.LegendItem
@@ -219,7 +220,7 @@ private fun HomeContent(
     onStart: () -> Unit,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(painterResource(R.drawable.ic_moon), contentDescription = null, tint = MoonGold, modifier = Modifier.size(22.dp))
+        MoonLogo(34.dp)
         Spacer(Modifier.size(8.dp))
         Text(stringResource(R.string.app_name), style = MaterialTheme.typography.titleMedium)
     }
@@ -370,7 +371,7 @@ private fun ColumnScope.SleepingContent(
         modifier = Modifier.align(Alignment.CenterHorizontally),
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(painterResource(R.drawable.ic_moon), contentDescription = null, tint = MoonGold, modifier = Modifier.size(30.dp))
+            MoonLogo(46.dp, sparkles = false)
             Spacer(Modifier.height(6.dp))
             Text(
                 stringResource(R.string.in_bed_for),

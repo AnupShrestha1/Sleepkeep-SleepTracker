@@ -44,7 +44,7 @@ class DemoDataSeeder {
 
         // daysAgo of wake-up, bedtime, wake-up, fall asleep, awake, monitored
         data class Night(val day: Long, val bed: String, val up: String, val fall: Int?, val awake: Int?, val mic: Boolean)
-        val nights = listOf(
+        val recent = listOf(
             Night(6, "23:10", "06:40", 15, 0, false),
             Night(5, "22:50", "06:35", 5, 15, true),
             Night(4, "00:20", "06:30", 30, 15, false),
@@ -52,6 +52,19 @@ class DemoDataSeeder {
             Night(2, "23:40", "06:50", null, null, false),
             Night(1, "22:55", "06:45", 15, 15, true),
         )
+        // Optional older history for the month and 3-month views: -e days 90. Weekend nights run
+        // later, and about one night in eight is missing.
+        val days = InstrumentationRegistry.getArguments().getString("days")?.toLongOrNull() ?: 0
+        val random = java.util.Random(7)
+        val older = (7L..days).mapNotNull { day ->
+            if (random.nextInt(8) == 0) return@mapNotNull null
+            val weekend = today.minusDays(day).dayOfWeek.value >= 6
+            val bed = LocalTime.of(22, 30).plusMinutes((if (weekend) 60L else 0L) + random.nextInt(70))
+            val up = LocalTime.of(6, 15).plusMinutes((if (weekend) 110L else 0L) + random.nextInt(50))
+            val checkIn = random.nextInt(5) != 0
+            Night(day, bed.toString(), up.toString(), if (checkIn) 15 else null, if (checkIn) 10 else null, false)
+        }
+        val nights = older + recent
         nights.forEach { n ->
             val start = if (n.bed < "12:00") at(n.day, n.bed) else at(n.day + 1, n.bed)
             val end = at(n.day, n.up)

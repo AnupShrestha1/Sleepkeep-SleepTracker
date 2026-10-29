@@ -5,13 +5,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -27,18 +32,20 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.anupshrestha.sleepkeep.R
 import com.anupshrestha.sleepkeep.guidance.SleepGuidelines
 import com.anupshrestha.sleepkeep.guidance.SleepStats
+import com.anupshrestha.sleepkeep.ui.common.BedtimeRangeChart
 import com.anupshrestha.sleepkeep.ui.common.Hint
 import com.anupshrestha.sleepkeep.ui.common.IconBadge
 import com.anupshrestha.sleepkeep.ui.common.LegendItem
 import com.anupshrestha.sleepkeep.ui.common.NightCard
 import com.anupshrestha.sleepkeep.ui.common.ScreenHeader
 import com.anupshrestha.sleepkeep.ui.common.StatusPill
+import com.anupshrestha.sleepkeep.ui.common.TrendBars
 import com.anupshrestha.sleepkeep.ui.common.WeekBars
 import com.anupshrestha.sleepkeep.ui.common.formatDuration
 import com.anupshrestha.sleepkeep.ui.common.formatMinuteOfDay
 import com.anupshrestha.sleepkeep.ui.theme.NumberStyle
 
-/** Weekly sleep duration and schedule against public adult guidance. */
+/** Sleep duration and schedule over a week, a month or three months, against adult guidance. */
 @Composable
 fun GuidanceScreen(viewModel: GuidanceViewModel = viewModel(factory = GuidanceViewModel.Factory)) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -53,13 +60,37 @@ fun GuidanceScreen(viewModel: GuidanceViewModel = viewModel(factory = GuidanceVi
     ) {
         ScreenHeader(stringResource(R.string.insights_title), R.drawable.ic_insights)
         val s = state ?: return@Column
+        RangeSwitch(s.range, viewModel::setRange)
         DurationCard(s)
-        when (val w = s.weekly) {
-            is SleepStats.Weekly.Summary -> ScheduleCard(w)
-            is SleepStats.Weekly.NotEnoughData -> Unit
-        }
+        ScheduleCard(s)
+        WeekdayWeekendCard(s.weekdayWeekend)
         AboutCard()
         Spacer(Modifier.height(8.dp))
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun RangeSwitch(selected: InsightsRange, onSelect: (InsightsRange) -> Unit) {
+    val labels = mapOf(
+        InsightsRange.WEEK to R.string.range_week,
+        InsightsRange.MONTH to R.string.range_month,
+        InsightsRange.QUARTER to R.string.range_quarter,
+    )
+    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+        InsightsRange.entries.forEachIndexed { i, range ->
+            SegmentedButton(
+                selected = range == selected,
+                onClick = { onSelect(range) },
+                shape = SegmentedButtonDefaults.itemShape(i, InsightsRange.entries.size),
+                colors = SegmentedButtonDefaults.colors(
+                    activeContainerColor = MaterialTheme.colorScheme.primary,
+                    activeContentColor = MaterialTheme.colorScheme.onPrimary,
+                    inactiveContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.6f),
+                ),
+                icon = {},
+            ) { Text(stringResource(labels.getValue(range))) }
+        }
     }
 }
 
@@ -67,7 +98,10 @@ fun GuidanceScreen(viewModel: GuidanceViewModel = viewModel(factory = GuidanceVi
 private fun DurationCard(s: InsightsState) {
     NightCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.guidance_duration_title), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+            Column(Modifier.weight(1f)) {
+                Text(stringResource(R.string.guidance_duration_title), style = MaterialTheme.typography.titleMedium)
+                Hint(stringResource(R.string.last_days, s.range.days))
+            }
             val w = s.weekly
             if (w is SleepStats.Weekly.Summary) {
                 StatusPill(
@@ -86,19 +120,26 @@ private fun DurationCard(s: InsightsState) {
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
-        WeekBars(s.nights, height = 170.dp)
-        Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+        if (s.range == InsightsRange.WEEK) {
+            WeekBars(s.nights, height = 170.dp)
+        } else {
+            TrendBars(s.nights, s.rolling)
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             LegendItem(MaterialTheme.colorScheme.primary, stringResource(R.string.legend_sleep))
             LegendItem(MaterialTheme.colorScheme.primary.copy(alpha = 0.38f), stringResource(R.string.legend_bed_only))
             LegendItem(MaterialTheme.colorScheme.secondary, stringResource(R.string.legend_guideline))
+        }
+        if (s.range != InsightsRange.WEEK) {
+            LegendItem(MaterialTheme.colorScheme.onSurface, stringResource(R.string.legend_rolling))
         }
         val w = s.weekly
         if (w is SleepStats.Weekly.Summary) {
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             val average = formatDuration(w.averageSleepMillis)
             Text(
-                if (w.meetsGuideline) stringResource(R.string.duration_met, average, w.nights)
-                else stringResource(R.string.duration_not_met, average, w.nights, w.nightsMeetingGuideline),
+                if (w.meetsGuideline) stringResource(R.string.duration_met_days, average, w.nights, s.range.days)
+                else stringResource(R.string.duration_not_met_days, average, w.nights, w.nightsMeetingGuideline, s.range.days),
                 style = MaterialTheme.typography.bodyMedium,
             )
             if (w.timeInBedOnlyNights > 0) {
@@ -109,33 +150,82 @@ private fun DurationCard(s: InsightsState) {
 }
 
 @Composable
-private fun ScheduleCard(w: SleepStats.Weekly.Summary) {
+private fun ScheduleCard(s: InsightsState) {
     NightCard {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             IconBadge(R.drawable.ic_history)
-            Text(stringResource(R.string.guidance_schedule_title), style = MaterialTheme.typography.titleMedium)
+            Column {
+                Text(stringResource(R.string.guidance_schedule_title), style = MaterialTheme.typography.titleMedium)
+                Hint(stringResource(R.string.bedtime_chart_hint))
+            }
+        }
+        BedtimeRangeChart(s.nights)
+        val w = s.weekly
+        if (w is SleepStats.Weekly.Summary) {
+            Row {
+                TimeStat(
+                    stringResource(R.string.usual_bedtime), formatMinuteOfDay(w.bedtime.usualMinuteOfDay),
+                    minutes(w.bedtime.averageDifferenceMinutes), Modifier.weight(1f),
+                )
+                TimeStat(
+                    stringResource(R.string.usual_wake_up), formatMinuteOfDay(w.wakeTime.usualMinuteOfDay),
+                    minutes(w.wakeTime.averageDifferenceMinutes), Modifier.weight(1f),
+                )
+            }
+            Text(
+                stringResource(
+                    R.string.schedule_text,
+                    formatMinuteOfDay(w.bedtime.usualMinuteOfDay),
+                    minutes(w.bedtime.averageDifferenceMinutes),
+                    formatMinuteOfDay(w.wakeTime.usualMinuteOfDay),
+                    minutes(w.wakeTime.averageDifferenceMinutes),
+                ),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+        Hint(stringResource(R.string.schedule_cdc))
+    }
+}
+
+@Composable
+private fun WeekdayWeekendCard(split: SleepStats.WeekdayWeekend) {
+    NightCard {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            IconBadge(R.drawable.ic_insights, tint = MaterialTheme.colorScheme.secondary)
+            Text(stringResource(R.string.ww_title), style = MaterialTheme.typography.titleMedium)
+        }
+        val weekdays = split.weekdays
+        val weekend = split.weekend
+        if (weekdays == null || weekend == null) {
+            Hint(stringResource(R.string.ww_needs))
+            return@NightCard
         }
         Row {
-            TimeStat(
-                stringResource(R.string.usual_bedtime), formatMinuteOfDay(w.bedtime.usualMinuteOfDay),
-                minutes(w.bedtime.averageDifferenceMinutes), Modifier.weight(1f),
-            )
-            TimeStat(
-                stringResource(R.string.usual_wake_up), formatMinuteOfDay(w.wakeTime.usualMinuteOfDay),
-                minutes(w.wakeTime.averageDifferenceMinutes), Modifier.weight(1f),
-            )
+            PartStat(stringResource(R.string.ww_weekdays), weekdays, Modifier.weight(1f))
+            PartStat(stringResource(R.string.ww_weekend), weekend, Modifier.weight(1f))
         }
+        val diff = weekend.averageSleepMillis - weekdays.averageSleepMillis
         Text(
-            stringResource(
-                R.string.schedule_text,
-                formatMinuteOfDay(w.bedtime.usualMinuteOfDay),
-                minutes(w.bedtime.averageDifferenceMinutes),
-                formatMinuteOfDay(w.wakeTime.usualMinuteOfDay),
-                minutes(w.wakeTime.averageDifferenceMinutes),
-            ),
+            when {
+                diff >= 30 * 60_000 -> stringResource(R.string.ww_more_weekend, formatDuration(diff))
+                diff <= -30 * 60_000 -> stringResource(R.string.ww_less_weekend, formatDuration(-diff))
+                else -> stringResource(R.string.ww_similar)
+            },
             style = MaterialTheme.typography.bodyMedium,
         )
-        Hint(stringResource(R.string.schedule_cdc))
+    }
+}
+
+@Composable
+private fun PartStat(label: String, part: SleepStats.WeekPart, modifier: Modifier = Modifier) {
+    Column(modifier) {
+        Hint(label)
+        Text(formatDuration(part.averageSleepMillis), style = MaterialTheme.typography.headlineSmall)
+        Text(
+            stringResource(R.string.ww_bed_around, formatMinuteOfDay(part.bedtime.usualMinuteOfDay)),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.primary,
+        )
     }
 }
 
@@ -155,7 +245,7 @@ private fun TimeStat(label: String, time: String, variation: String, modifier: M
 @Composable
 private fun AboutCard() {
     val uriHandler = LocalUriHandler.current
-    NightCard(color = MaterialTheme.colorScheme.surfaceContainer) {
+    NightCard(color = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.9f)) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             IconBadge(R.drawable.ic_shield, tint = MaterialTheme.colorScheme.tertiary)
             Text(stringResource(R.string.guidance_about_title), style = MaterialTheme.typography.titleMedium)

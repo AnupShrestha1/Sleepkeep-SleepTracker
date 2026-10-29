@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.anupshrestha.sleepkeep.R
 import com.anupshrestha.sleepkeep.ui.common.IconBadge
+import com.anupshrestha.sleepkeep.ui.common.MoonLogo
 import com.anupshrestha.sleepkeep.ui.common.PillButton
 import com.anupshrestha.sleepkeep.ui.theme.MoonGold
 
@@ -110,14 +111,7 @@ private fun NightScene(modifier: Modifier = Modifier) {
         Canvas(Modifier.fillMaxSize()) {
             val w = size.width
             val h = size.height
-            listOf(0.12f to 0.18f, 0.82f to 0.12f, 0.70f to 0.34f, 0.25f to 0.42f, 0.92f to 0.40f).forEach { (x, y) ->
-                drawCircle(Color.White.copy(alpha = 0.7f), radius = 2.5f, center = Offset(w * x, h * y))
-            }
-            drawCircle(
-                Brush.radialGradient(listOf(MoonGold.copy(alpha = 0.25f), Color.Transparent), Offset(w / 2, h * 0.34f), h * 0.4f),
-                radius = h * 0.4f,
-                center = Offset(w / 2, h * 0.34f),
-            )
+            // Stars come from the galaxy background; the moon draws its own glow.
             val back = Path().apply {
                 moveTo(0f, h * 0.78f)
                 cubicTo(w * 0.25f, h * 0.55f, w * 0.45f, h * 0.70f, w * 0.62f, h * 0.60f)
@@ -134,11 +128,6 @@ private fun NightScene(modifier: Modifier = Modifier) {
             }
             drawPath(front, Brush.verticalGradient(listOf(near, Color.Transparent), startY = h * 0.75f, endY = h))
         }
-        Icon(
-            painterResource(R.drawable.ic_moon), contentDescription = null, tint = MoonGold,
-            modifier = Modifier
-                .padding(top = 28.dp)
-                .size(96.dp),
-        )
+        MoonLogo(160.dp, Modifier.padding(top = 4.dp))
     }
 }

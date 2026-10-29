@@ -1,11 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- A crescent moon inside the adaptive-icon safe zone (a 66 dp circle in the middle of 108 dp). -->
+<!-- Launcher icon moon: a glow, a gold crescent lit from the upper left, and two sparkles, all
+     inside the adaptive-icon safe zone (a 66 dp circle in the middle of 108 dp). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <path android:pathData="M20,54a34,34 0 1,0 68,0a34,34 0 1,0 -68,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="54" android:centerY="54"
+                android:gradientRadius="34">
+                <item android:offset="0" android:color="#55F2D891" />
+                <item android:offset="0.6" android:color="#1AF2D891" />
+                <item android:offset="1" android:color="#00F2D891" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path android:pathData="M52.54,32.05 A22,22 0 1,0 75.33,59.4 A18,18 0 0,1 52.54,32.05 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="34" android:startY="34"
+                android:endX="66" android:endY="78">
+                <item android:offset="0" android:color="#FFFFF3CC" />
+                <item android:offset="0.5" android:color="#FFF2D891" />
+                <item android:offset="1" android:color="#FFD9A54A" />
+            </gradient>
+        </aapt:attr>
+    </path>
     <path
-        android:fillColor="@color/ic_launcher_moon"
-        android:pathData="M52.54,32.05 A22,22 0 1,0 75.33,59.4 A18,18 0 0,1 52.54,32.05 Z" />
+        android:fillColor="#FFF8F6FF"
+        android:pathData="M75,27 Q76.7,31.3 81,33 Q76.7,34.7 75,39 Q73.3,34.7 69,33 Q73.3,31.3 75,27 Z" />
+    <path
+        android:fillColor="#E6F8F6FF"
+        android:pathData="M80,42.5 Q81,45 83.5,46 Q81,47 80,49.5 Q79,47 76.5,46 Q79,45 80,42.5 Z" />
 </vector>

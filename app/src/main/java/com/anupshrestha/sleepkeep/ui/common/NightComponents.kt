@@ -1,6 +1,7 @@
 package com.anupshrestha.sleepkeep.ui.common
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.anupshrestha.sleepkeep.ui.theme.NightDeep
 import com.anupshrestha.sleepkeep.ui.theme.NightSky
 
-/** The screen-wide night-sky gradient behind every screen. */
+/** The screen-wide galaxy sky behind every screen. */
 @Composable
 fun NightBackground(content: @Composable BoxScope.() -> Unit) {
     // Text outside cards gets the light on-background colour instead of the default black.
@@ -46,24 +47,29 @@ fun NightBackground(content: @Composable BoxScope.() -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Brush.verticalGradient(listOf(NightSky, NightDeep, NightDeep))),
+                .background(Brush.verticalGradient(listOf(NightSky, NightDeep, NightDeep)))
+                .galaxy(),
             content = content,
         )
     }
 }
 
-/** A rounded card in the app's style; tappable when [onClick] is given. */
+/**
+ * A rounded card in the app's style; tappable when [onClick] is given. Slightly see-through, with
+ * a faint light edge, so the galaxy shows behind it like frosted glass.
+ */
 @Composable
 fun NightCard(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
-    color: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    color: Color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.9f),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Surface(
         shape = RoundedCornerShape(24.dp),
         color = color,
         contentColor = MaterialTheme.colorScheme.onSurface,
+        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.06f)),
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))

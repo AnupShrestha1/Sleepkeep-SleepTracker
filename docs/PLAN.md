@@ -31,6 +31,24 @@ Open items, in order:
 6. Upload key, privacy policy placeholders, signed bundle and Play Console
    ([RELEASE.md](RELEASE.md)).
 
+## Features after v1 (agreed 2026-10-29)
+
+These were reviewed for honesty: nothing here claims to measure what a phone can't.
+
+| # | Feature | State | Notes |
+|---|---|---|---|
+| 1 | **Trends** | ✅ Built | Insights has a Week / Month / 3 months switch. Long ranges show nightly dots with a 7-night rolling average, plus a bedtime→wake-up range chart and weekday vs weekend averages. The hour axis is zoomed to the data, so dots are used instead of bars. |
+| 2 | **"How rested do you feel?"** | Next | A 1–5 morning self-rating, shown against duration and schedule. Replaces any computed "sleep quality" score, which would be invented. |
+| 3 | **Sleep sounds** | Later | Generated white, pink and brown noise, plus a few CC0 rain or storm loops, with a fade-out timer. Monitoring ignores the time sounds are playing, and the night page marks it. |
+| 4 | **Saved sound clips** | Later | Opt-in, about 10 s per loud sound, deleted after 7 days, stored only on the phone. Never labelled "snoring". Needs the privacy policy, in-app privacy text and Play Data safety updated. |
+| 5 | **Plain alarm and timer** | Later | A set-time alarm and a "wake me in N h" timer; dismissing it can end the session. No "smart" light-sleep alarm. Needs the exact-alarm and full-screen-intent permissions, and careful reliability testing. |
+| 6 | **Health Connect import** | Later | Reads sleep stages measured by a wearable, rather than estimating them. Was out of scope in the original brief; the user opted in on 2026-10-29. |
+
+Rejected:
+
+- **Sleep-cycle tracking from the phone:** the microphone can't tell sleep stages apart.
+- **A computed sleep-quality score:** there's no sensor data to base it on.
+
 ## How each step runs
 
 1. I explain what the step builds and list the exact files.
