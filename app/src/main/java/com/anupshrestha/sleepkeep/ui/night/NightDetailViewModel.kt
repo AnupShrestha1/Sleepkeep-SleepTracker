@@ -73,8 +73,8 @@ class NightDetailViewModel(
         }
     }
 
-    fun saveCheckIn(fallAsleepMinutes: Int?, awakeMinutes: Int?) {
-        viewModelScope.launch { repository.saveCheckIn(sessionId, fallAsleepMinutes, awakeMinutes) }
+    fun saveCheckIn(fallAsleepMinutes: Int?, awakeMinutes: Int?, restedRating: Int?) {
+        viewModelScope.launch { repository.saveCheckIn(sessionId, fallAsleepMinutes, awakeMinutes, restedRating) }
     }
 
     fun delete() {

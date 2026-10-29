@@ -99,6 +99,27 @@ object SleepStats {
         return WeekdayWeekend(part(weekdays), part(weekend))
     }
 
+    /**
+     * The user's own "How rested do you feel?" answers (1–5): the average, and the average on
+     * nights of at least 7 hours against shorter ones. Each comparison side needs 2 rated nights.
+     */
+    data class Rested(
+        val nights: Int,
+        val average: Float,
+        val onSevenPlus: Float?,
+        val onShorter: Float?,
+    )
+
+    /** `null` with fewer than 3 rated nights in the last [days] days. */
+    fun rested(sessions: List<SleepSession>, today: LocalDate, days: Int): Rested? {
+        val rated = nightsWithin(sessions, today, days).filter { it.restedRating != null }
+        if (rated.size < SleepGuidelines.MIN_NIGHTS) return null
+        fun mean(nights: List<SleepSession>): Float? =
+            if (nights.size < 2) null else nights.map { it.restedRating!! }.average().toFloat()
+        val (long, short) = rated.partition { (it.sleepEstimateMillis() ?: 0) >= SleepGuidelines.MIN_ADULT_SLEEP_MILLIS }
+        return Rested(rated.size, mean(rated)!!, mean(long), mean(short))
+    }
+
     private fun mainSleeps(sessions: List<SleepSession>): List<SleepSession> {
         val naps = napIds(sessions)
         return sessions.filter { it.endTime != null && it.id !in naps }

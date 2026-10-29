@@ -26,6 +26,8 @@ data class InsightsState(
     val nights: List<SleepStats.NightBar>,
     val rolling: List<Long?>,
     val weekdayWeekend: SleepStats.WeekdayWeekend,
+    /** `null` with fewer than 3 rated nights. */
+    val rested: SleepStats.Rested?,
 )
 
 class GuidanceViewModel(repository: SleepRepository, clock: Clock) : ViewModel() {
@@ -42,6 +44,7 @@ class GuidanceViewModel(repository: SleepRepository, clock: Clock) : ViewModel()
             nights = nights,
             rolling = SleepStats.rollingAverage(nights),
             weekdayWeekend = SleepStats.weekdayWeekend(sessions, today, range.days),
+            rested = SleepStats.rested(sessions, today, range.days),
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 

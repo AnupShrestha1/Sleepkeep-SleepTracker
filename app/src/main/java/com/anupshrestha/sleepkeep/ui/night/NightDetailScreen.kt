@@ -56,6 +56,7 @@ import com.anupshrestha.sleepkeep.ui.dashboard.CheckInSheet
 import com.anupshrestha.sleepkeep.ui.dashboard.awakeChoices
 import com.anupshrestha.sleepkeep.ui.dashboard.choiceLabel
 import com.anupshrestha.sleepkeep.ui.dashboard.fallAsleepChoices
+import com.anupshrestha.sleepkeep.ui.dashboard.restedChoices
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -131,13 +132,14 @@ fun NightDetailScreen(
         }
         if (editingCheckIn) {
             CheckInSheet(
-                onSave = { fallAsleep, awake ->
-                    viewModel.saveCheckIn(fallAsleep, awake)
+                onSave = { fallAsleep, awake, rested ->
+                    viewModel.saveCheckIn(fallAsleep, awake, rested)
                     editingCheckIn = false
                 },
                 onSkip = { editingCheckIn = false },
                 initialFallAsleep = session.fallAsleepMinutes,
                 initialAwake = session.awakeMinutes,
+                initialRested = session.restedRating,
             )
         }
         if (confirmingDelete) {
@@ -210,6 +212,8 @@ private fun CheckInCard(session: SleepSession) {
             Stat(fallAsleep, stringResource(R.string.detail_fall_asleep_label), Modifier.weight(1f), muted = session.fallAsleepMinutes == null)
             Stat(awake, stringResource(R.string.detail_awake_label), Modifier.weight(1f), muted = session.awakeMinutes == null)
         }
+        val rested = choiceLabel(restedChoices, session.restedRating)?.let { stringResource(it) } ?: notAnswered
+        Stat(rested, stringResource(R.string.detail_rested_label), muted = session.restedRating == null)
     }
 }
 

@@ -64,10 +64,10 @@ class SleepRepository(
             null
         }
 
-    suspend fun saveCheckIn(sessionId: Long, fallAsleepMinutes: Int?, awakeMinutes: Int?) {
+    suspend fun saveCheckIn(sessionId: Long, fallAsleepMinutes: Int?, awakeMinutes: Int?, restedRating: Int?) {
         val session = dao.getSession(sessionId) ?: return
         dao.updateSession(
-            session.copy(fallAsleepMinutes = fallAsleepMinutes, awakeMinutes = awakeMinutes)
+            session.copy(fallAsleepMinutes = fallAsleepMinutes, awakeMinutes = awakeMinutes, restedRating = restedRating)
         )
     }
 

@@ -49,17 +49,28 @@ internal val awakeChoices = listOf(
 internal fun choiceLabel(choices: List<Choice>, minutes: Int?): Int? =
     choices.firstOrNull { it.minutes == minutes }?.label
 
+/** "How rested do you feel?", stored as 1–5. */
+internal val restedChoices = listOf(
+    Choice(1, R.string.rested_1),
+    Choice(2, R.string.rested_2),
+    Choice(3, R.string.rested_3),
+    Choice(4, R.string.rested_4),
+    Choice(5, R.string.rested_5),
+)
+
 /** Optional morning questions; an unanswered question is saved as "not answered". */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckInSheet(
-    onSave: (fallAsleepMinutes: Int?, awakeMinutes: Int?) -> Unit,
+    onSave: (fallAsleepMinutes: Int?, awakeMinutes: Int?, restedRating: Int?) -> Unit,
     onSkip: () -> Unit,
     initialFallAsleep: Int? = null,
     initialAwake: Int? = null,
+    initialRested: Int? = null,
 ) {
     var fallAsleep by rememberSaveable { mutableStateOf(initialFallAsleep) }
     var awake by rememberSaveable { mutableStateOf(initialAwake) }
+    var rested by rememberSaveable { mutableStateOf(initialRested) }
 
     ModalBottomSheet(
         onDismissRequest = onSkip,
@@ -80,12 +91,15 @@ fun CheckInSheet(
             Text(stringResource(R.string.check_in_awake), style = MaterialTheme.typography.titleSmall)
             Choices(awakeChoices, awake) { awake = it }
 
+            Text(stringResource(R.string.check_in_rested), style = MaterialTheme.typography.titleSmall)
+            Choices(restedChoices, rested) { rested = it }
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp, androidx.compose.ui.Alignment.End),
             ) {
                 TextButton(onClick = onSkip) { Text(stringResource(R.string.skip)) }
-                Button(onClick = { onSave(fallAsleep, awake) }) { Text(stringResource(R.string.save)) }
+                Button(onClick = { onSave(fallAsleep, awake, rested) }) { Text(stringResource(R.string.save)) }
             }
         }
     }

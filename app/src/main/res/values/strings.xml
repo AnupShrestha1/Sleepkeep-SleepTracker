@@ -263,6 +263,21 @@
     <string name="ww_less_weekend">You sleep about %1$s less on weekends.</string>
     <string name="ww_similar">Your weekday and weekend sleep are about the same length.</string>
 
+    <!-- How rested -->
+    <string name="check_in_rested">How rested do you feel?</string>
+    <string name="rested_1">Exhausted</string>
+    <string name="rested_2">Tired</string>
+    <string name="rested_3">OK</string>
+    <string name="rested_4">Rested</string>
+    <string name="rested_5">Very rested</string>
+    <string name="detail_rested_label">how rested you felt</string>
+    <string name="rested_title">How rested you felt</string>
+    <string name="rested_score">%1$.1f / 5</string>
+    <string name="rested_seven_plus">After 7 h or more</string>
+    <string name="rested_shorter">After shorter nights</string>
+    <string name="rested_needs">Answer \"How rested do you feel?\" in the morning check-in on at least 3 nights in this period to see this.</string>
+    <string name="rested_note">Your own answers, not a measurement. A difference here shows a pattern in how you felt, not what caused it.</string>
+
     <!-- Common -->
     <string name="save">Save</string>
     <string name="skip">Skip</string>

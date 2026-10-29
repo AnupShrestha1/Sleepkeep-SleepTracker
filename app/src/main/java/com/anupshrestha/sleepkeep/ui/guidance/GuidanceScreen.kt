@@ -63,6 +63,7 @@ fun GuidanceScreen(viewModel: GuidanceViewModel = viewModel(factory = GuidanceVi
         RangeSwitch(s.range, viewModel::setRange)
         DurationCard(s)
         ScheduleCard(s)
+        RestedCard(s.rested)
         WeekdayWeekendCard(s.weekdayWeekend)
         AboutCard()
         Spacer(Modifier.height(8.dp))
@@ -184,6 +185,47 @@ private fun ScheduleCard(s: InsightsState) {
             )
         }
         Hint(stringResource(R.string.schedule_cdc))
+    }
+}
+
+/** The user's own ratings, not a measured "quality score". */
+@Composable
+private fun RestedCard(rested: SleepStats.Rested?) {
+    NightCard {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            IconBadge(R.drawable.ic_sun, tint = MaterialTheme.colorScheme.secondary)
+            Text(stringResource(R.string.rested_title), style = MaterialTheme.typography.titleMedium)
+        }
+        if (rested == null) {
+            Hint(stringResource(R.string.rested_needs))
+            return@NightCard
+        }
+        Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.rested_score, rested.average), style = MaterialTheme.typography.headlineMedium)
+            Text(
+                pluralStringResource(R.plurals.average_over_nights, rested.nights, rested.nights),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(bottom = 4.dp),
+            )
+        }
+        val long = rested.onSevenPlus
+        val short = rested.onShorter
+        if (long != null && short != null) {
+            Row {
+                RatingStat(stringResource(R.string.rested_seven_plus), long, Modifier.weight(1f))
+                RatingStat(stringResource(R.string.rested_shorter), short, Modifier.weight(1f))
+            }
+        }
+        Hint(stringResource(R.string.rested_note))
+    }
+}
+
+@Composable
+private fun RatingStat(label: String, value: Float, modifier: Modifier = Modifier) {
+    Column(modifier) {
+        Hint(label)
+        Text(stringResource(R.string.rested_score, value), style = MaterialTheme.typography.headlineSmall)
     }
 }
 

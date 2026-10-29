@@ -72,6 +72,8 @@ class DemoDataSeeder {
                 SleepSession(
                     startTime = start, endTime = end, zoneId = zone.id,
                     fallAsleepMinutes = n.fall, awakeMinutes = n.awake, monitoringRequested = n.mic,
+                    // Shorter nights rated a little lower, so the Insights card has a pattern to show.
+                    restedRating = n.fall?.let { if (n.up < "06:40" || n.bed > "23:30") 3 else 4 },
                 )
             )
             if (!n.mic) return@forEach

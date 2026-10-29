@@ -221,6 +221,43 @@ class SleepStatsTest {
         assertEquals(null, result.weekend)
     }
 
+    // How rested
+
+    private fun rated(id: Long, day: Int, wakeH: Int, rating: Int?) =
+        night(id, day, 23, 0, wakeH, 0).copy(restedRating = rating)
+
+    @Test
+    fun `rested needs three rated nights`() {
+        val sessions = listOf(rated(1, 27, 7, 4), rated(2, 28, 7, 5), rated(3, 26, 7, null))
+        assertEquals(null, SleepStats.rested(sessions, today, 7))
+    }
+
+    @Test
+    fun `rested compares seven-hour nights with shorter ones`() {
+        val result = SleepStats.rested(
+            listOf(
+                rated(1, 23, 7, 4), // 8 h
+                rated(2, 24, 7, 5), // 8 h
+                rated(3, 25, 5, 2), // 6 h
+                rated(4, 26, 5, 3), // 6 h
+            ),
+            today, 7,
+        )!!
+        assertEquals(4, result.nights)
+        assertEquals(3.5f, result.average, 0.001f)
+        assertEquals(4.5f, result.onSevenPlus!!, 0.001f)
+        assertEquals(2.5f, result.onShorter!!, 0.001f)
+    }
+
+    @Test
+    fun `a comparison side with one night is left empty`() {
+        val result = SleepStats.rested(
+            listOf(rated(1, 24, 7, 4), rated(2, 25, 7, 5), rated(3, 26, 5, 2)),
+            today, 7,
+        )!!
+        assertEquals(null, result.onShorter)
+    }
+
     // Consistency
 
     @Test

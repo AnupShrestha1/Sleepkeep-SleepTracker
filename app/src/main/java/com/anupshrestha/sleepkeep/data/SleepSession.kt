@@ -18,6 +18,8 @@ data class SleepSession(
     val fallAsleepMinutes: Int? = null,
     val awakeMinutes: Int? = null,
     val monitoringRequested: Boolean = false,
+    /** "How rested do you feel?" from 1 (exhausted) to 5 (very rested); `null` = not answered. */
+    val restedRating: Int? = null,
 )
 
 val SleepSession.isActive: Boolean get() = endTime == null

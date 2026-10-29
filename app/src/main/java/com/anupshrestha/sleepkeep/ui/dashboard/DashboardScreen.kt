@@ -202,7 +202,7 @@ fun DashboardScreen(
             onSetWakeTime = { viewModel.setWakeTime(p.session, it) },
         )
         is EndPrompt.CheckIn -> CheckInSheet(
-            onSave = { fallAsleep, awake -> viewModel.saveCheckIn(p.sessionId, fallAsleep, awake) },
+            onSave = { fallAsleep, awake, rested -> viewModel.saveCheckIn(p.sessionId, fallAsleep, awake, rested) },
             onSkip = viewModel::dismissPrompt,
         )
         null -> Unit

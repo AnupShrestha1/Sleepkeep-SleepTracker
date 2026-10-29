@@ -186,9 +186,9 @@ class DashboardViewModel(
         }
     }
 
-    fun saveCheckIn(sessionId: Long, fallAsleepMinutes: Int?, awakeMinutes: Int?) {
+    fun saveCheckIn(sessionId: Long, fallAsleepMinutes: Int?, awakeMinutes: Int?, restedRating: Int?) {
         _prompt.value = null
-        viewModelScope.launch { repository.saveCheckIn(sessionId, fallAsleepMinutes, awakeMinutes) }
+        viewModelScope.launch { repository.saveCheckIn(sessionId, fallAsleepMinutes, awakeMinutes, restedRating) }
     }
 
     fun dismissPrompt() {

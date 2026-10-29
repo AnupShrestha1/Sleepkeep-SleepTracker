@@ -133,9 +133,10 @@ class SleepRepositoryTest {
         repository.startSession()
         nowMillis += 8 * hour
         val ended = repository.endSession()!!
-        repository.saveCheckIn(ended.id, fallAsleepMinutes = 15, awakeMinutes = null)
+        repository.saveCheckIn(ended.id, fallAsleepMinutes = 15, awakeMinutes = null, restedRating = 4)
         val saved = repository.getSession(ended.id)!!
         assertEquals(15, saved.fallAsleepMinutes)
         assertNull(saved.awakeMinutes)
+        assertEquals(4, saved.restedRating)
     }
 }
